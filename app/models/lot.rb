@@ -1,7 +1,24 @@
+# == Schema Information
+#
+# Table name: lots
+#
+#  id              :integer          not null, primary key
+#  user_id         :integer
+#  title           :text             not null
+#  image           :string
+#  description     :text
+#  status          :integer          default("pending"), not null
+#  created_at      :datetime         not null
+#  current_price   :float            not null
+#  estimated_price :float            not null
+#  lot_start_time  :datetime         not null
+#  lot_end_time    :datetime         not null
+#
+
 class Lot < ApplicationRecord
   belongs_to :user
   has_one :order, through: :bid
-  has_many :bids, dependent: :destroy, inverse_of: :Lot
+  has_many :bids, dependent: :destroy, inverse_of: :lot
 
   enum status: %i[pending inProcess closed]
   validates :title, :status, :created_at, :current_price, :estimated_price,
