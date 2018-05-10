@@ -53,6 +53,10 @@ GEM
     concurrent-ruby (1.0.5)
     crass (1.0.4)
     diff-lcs (1.3)
+    dotenv (2.4.0)
+    dotenv-rails (2.4.0)
+      dotenv (= 2.4.0)
+      railties (>= 3.2, < 6.0)
     erubi (1.7.1)
     factory_bot (4.8.2)
       activesupport (>= 3.0.0)
@@ -75,10 +79,14 @@ GEM
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     minitest (5.11.3)
+    msgpack (1.2.4)
     msgpack (1.2.4-x64-mingw32)
     nio4r (2.3.1)
+    nokogiri (1.8.2)
+      mini_portile2 (~> 2.3.0)
     nokogiri (1.8.2-x64-mingw32)
       mini_portile2 (~> 2.3.0)
+    pg (1.0.0)
     pg (1.0.0-x64-mingw32)
     puma (3.11.4)
     rack (2.0.5)
@@ -146,12 +154,14 @@ GEM
     websocket-extensions (0.1.3)
 
 PLATFORMS
+  ruby
   x64-mingw32
 
 DEPENDENCIES
   annotate
   bootsnap (>= 1.1.0)
   byebug
+  dotenv-rails
   factory_bot_rails
   pg (>= 0.18, < 2.0)
   puma (~> 3.11)
@@ -161,7 +171,7 @@ DEPENDENCIES
   validates_email_format_of
 
 RUBY VERSION
-   ruby 2.4.3p205
+   ruby 2.6.0p-1
 
 BUNDLED WITH
    1.16.1
