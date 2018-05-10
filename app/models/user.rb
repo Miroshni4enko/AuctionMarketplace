@@ -2,7 +2,7 @@
 #
 # Table name: users
 #
-#  id         :integer          not null, primary key
+#  id         :bigint(8)        not null, primary key
 #  email      :string           not null
 #  phone      :string           not null
 #  first_name :string           not null
@@ -17,10 +17,10 @@ class User < ApplicationRecord
   validates :email, :phone, :first_name, :last_name, :birthday, presence: true
   validates :email, :phone, uniqueness: true
   validates :email, email_format: { message: "doesn't look like an email address" }
-  validate :birthday_must_be_more_than_21
+  validate :birthday_cannot_be_less_than_21
 
   def birthday_cannot_be_less_than_21
-    if ((birthday.to_date - Date.today) / 365.25) < 21.00
+    if ((Date.today - birthday.to_date) / 365.25) < 21.00
       errors.add(:birthday, "can't be less than 21")
     end
   end

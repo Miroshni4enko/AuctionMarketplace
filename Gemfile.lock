@@ -171,7 +171,7 @@ DEPENDENCIES
   validates_email_format_of
 
 RUBY VERSION
-   ruby 2.6.0p-1
+   ruby 2.4.3p205
 
 BUNDLED WITH
    1.16.1

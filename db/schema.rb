@@ -12,9 +12,12 @@
 
 ActiveRecord::Schema.define(version: 2018_05_07_142056) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "bids", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "lot_id"
+    t.bigint "user_id"
+    t.bigint "lot_id"
     t.datetime "bid_creation_time", null: false
     t.float "proposed_price", null: false
     t.index ["lot_id"], name: "index_bids_on_lot_id"
@@ -22,7 +25,7 @@ ActiveRecord::Schema.define(version: 2018_05_07_142056) do
   end
 
   create_table "lots", force: :cascade do |t|
-    t.integer "user_id"
+    t.bigint "user_id"
     t.text "title", null: false
     t.string "image"
     t.text "description"
@@ -36,10 +39,10 @@ ActiveRecord::Schema.define(version: 2018_05_07_142056) do
   end
 
   create_table "orders", force: :cascade do |t|
-    t.integer "bid_id"
+    t.bigint "bid_id"
     t.text "arrival_location", null: false
-    t.string "arrival_type", null: false
-    t.integer "status", null: false
+    t.integer "arrival_type", default: 0, null: false
+    t.integer "status", default: 0, null: false
     t.index ["bid_id"], name: "index_orders_on_bid_id"
   end
 
@@ -48,7 +51,7 @@ ActiveRecord::Schema.define(version: 2018_05_07_142056) do
     t.string "phone", null: false
     t.string "first_name", null: false
     t.string "last_name", null: false
-    t.date "birthdate", null: false
+    t.date "birthday", null: false
   end
 
 end
