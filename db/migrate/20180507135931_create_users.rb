@@ -5,9 +5,7 @@ class CreateUsers < ActiveRecord::Migration[5.2]
       t.string :phone, null: false, unique: true
       t.string :first_name, null: false
       t.string :last_name, null: false
-      t.datetime :birth_day, null: false
-
-      t.timestamps
+      t.date :birthday, null: false
     end
   end
 end

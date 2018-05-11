@@ -46,3 +46,8 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'rspec-rails', :groups => [:development, :test]
 gem 'factory_bot_rails', :groups => [:development, :test]
+
+gem 'validates_email_format_of'
+gem 'annotate'
+gem 'dotenv-rails', groups: [:development, :test]
+gem 'rubocop', '~> 0.55.0', require: false
