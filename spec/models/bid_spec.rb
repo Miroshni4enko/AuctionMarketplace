@@ -2,11 +2,11 @@
 #
 # Table name: bids
 #
-#  id                :bigint(8)        not null, primary key
-#  user_id           :bigint(8)
-#  lot_id            :bigint(8)
-#  bid_creation_time :datetime         not null
-#  proposed_price    :float            not null
+#  id             :bigint(8)        not null, primary key
+#  user_id        :bigint(8)
+#  lot_id         :bigint(8)
+#  created_at     :datetime         not null
+#  proposed_price :float            not null
 #
 
 require 'rails_helper'

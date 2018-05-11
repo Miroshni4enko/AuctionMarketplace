@@ -50,3 +50,4 @@ gem 'factory_bot_rails', :groups => [:development, :test]
 gem 'validates_email_format_of'
 gem 'annotate'
 gem 'dotenv-rails', groups: [:development, :test]
+gem 'rubocop', '~> 0.55.0', require: false

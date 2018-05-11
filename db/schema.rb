@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 2018_05_07_142056) do
   create_table "bids", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "lot_id"
-    t.datetime "bid_creation_time", null: false
+    t.datetime "created_at", null: false
     t.float "proposed_price", null: false
     t.index ["lot_id"], name: "index_bids_on_lot_id"
     t.index ["user_id"], name: "index_bids_on_user_id"
