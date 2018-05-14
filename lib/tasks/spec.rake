@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rubocop/rake_task'
 require 'rspec/core/rake_task'
 namespace :spec do
@@ -10,4 +12,3 @@ end
 Rake::Task[:spec].enhance do
   Rake::Task['spec:rubocop'].invoke
 end
-
