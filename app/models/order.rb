@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: orders
@@ -12,8 +14,8 @@
 class Order < ApplicationRecord
   belongs_to :bid
 
-  enum status: {pending: 0, sent: 1, delivered: 2}
+  enum status: { pending: 0, sent: 1, delivered: 2 }
   validates :arrival_location, :arrival_type, :status, presence: true
-  enum arrival_type: {pickup: 0, 'Royal Mail'.to_sym => 1, 'United States Postal Service'.to_sym => 2,
-                      'DHL Express'.to_sym => 3}
+  enum arrival_type: { pickup: 0, 'Royal Mail'.to_sym => 1, 'United States Postal Service'.to_sym => 2,
+                       'DHL Express'.to_sym => 3 }
 end

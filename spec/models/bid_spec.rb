@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: bids
@@ -10,6 +12,5 @@
 #
 
 require 'rails_helper'
-RSpec.describe Bid, :type => :model do
-
+RSpec.describe Bid, type: :model do
 end
