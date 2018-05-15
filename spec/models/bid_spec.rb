@@ -11,6 +11,6 @@
 #  proposed_price :float            not null
 #
 
-require 'rails_helper'
+require "rails_helper"
 RSpec.describe Bid, type: :model do
 end
