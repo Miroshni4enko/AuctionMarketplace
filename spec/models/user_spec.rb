@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: users
@@ -28,11 +29,11 @@
 #  tokens                 :json
 #
 
-require 'rails_helper'
+require "rails_helper"
 RSpec.describe User, type: :model do
-  describe '#birthday' do
-    it 'should validate that age more than 21' do
-      mock_user = User.new birthday: Date.parse('2000-12-03').to_date
+  describe "#birthday" do
+    it "should validate that age more than 21" do
+      mock_user = User.new birthday: Date.parse("2000-12-03").to_date
       mock_user.valid?
       expect(mock_user.errors[:birthday]).to include("can't be less than 21")
     end

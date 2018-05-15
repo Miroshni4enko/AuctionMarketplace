@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ControllerHelpers
   def login_user
     user = FactoryBot.create(:random_user)
