@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe UserController, type: :controller do
+RSpec.describe Api::V1::UserController, type: :controller do
   describe "GET #members_only " do
     it "doesn't give you anything if you don't log in" do
       get :members_only
@@ -16,5 +16,4 @@ RSpec.describe UserController, type: :controller do
       expect(response).to be_successful
     end
   end
-
 end
