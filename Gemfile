@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 source "https://rubygems.org"
-git_source(:github) { |repo| "https://github.com/#{repo}.git" }
+git_source(:github) {|repo| "https://github.com/#{repo}.git"}
 
 ruby "2.4.3"
 
@@ -44,11 +44,13 @@ gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 # ###
 # Testing
 # ###
-
-gem "factory_bot_rails", groups: %i[development test]
-gem "faker", "~> 1.8.7"
-gem "rspec-rails", groups: %i[development test]
-gem 'rspec-its'
+group :test do
+  gem "factory_bot_rails"
+  gem "faker", "~> 1.8.7"
+  gem "rspec-rails"
+  gem 'rspec-its'
+  gem 'database_cleaner'
+end
 
 gem "annotate"
 gem "dotenv-rails", groups: %i[development test]
