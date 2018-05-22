@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 
-RSpec.describe LotsController, type: :controller do
+RSpec.describe Api::V1::LotsController, type: :controller do
   describe "GET #index " do
     describe "result without sign in" do
       it "doesn't give you anything if you don't log in" do
@@ -57,7 +59,7 @@ RSpec.describe LotsController, type: :controller do
 
         get :my
 
-        @response_lot_ids =  json_response_body["lots"].map{|lot_hash| lot_hash["id"]}
+        @response_lot_ids = json_response_body["lots"].map { |lot_hash| lot_hash["id"] }
       end
 
       it "get success result after sign_in" do
@@ -119,7 +121,7 @@ RSpec.describe LotsController, type: :controller do
     describe "Put #update" do
       describe "result without sign in" do
         it "doesn't give you anything if you don't log in" do
-          put :update, params: {id: 1}
+          put :update, params: { id: 1 }
           expect(response).to have_http_status(401)
         end
       end
@@ -130,8 +132,8 @@ RSpec.describe LotsController, type: :controller do
           @new_lot = FactoryBot.create(:random_lot, user: current_user)
           request.headers.merge! current_user.create_new_auth_token
           put :update,
-              params: {id: @new_lot.id,
-                       status: :in_process}
+              params: { id: @new_lot.id,
+                       status: :in_process }
           @new_lot.reload
         end
 
@@ -142,7 +144,7 @@ RSpec.describe LotsController, type: :controller do
         it "change status" do
           expect(@new_lot.status).to eq("in_process")
         end
-#TODO write test for upload file
+# TODO write test for upload file
 =begin
 image: Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'files', 'lot_ex.jpg'), 'image/jpeg')
         it "uploads file" do
@@ -152,9 +154,8 @@ image: Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'files',
       end
     end
   end
-  
+
   def json_response_body
     JSON.parse(response.body)
   end
 end
-

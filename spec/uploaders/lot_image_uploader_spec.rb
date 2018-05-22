@@ -1,4 +1,6 @@
-require 'carrierwave/test/matchers'
+# frozen_string_literal: true
+
+require "carrierwave/test/matchers"
 require "rails_helper"
 
 describe LotImageUploader do
@@ -9,7 +11,7 @@ describe LotImageUploader do
 
   before do
     LotImageUploader.enable_processing = true
-    File.open('./spec/fixtures/files/lot_ex.jpg') { |f| uploader.store!(f) }
+    File.open("./spec/fixtures/files/lot_ex.jpg") { |f| uploader.store!(f) }
   end
 
   after do
@@ -17,7 +19,7 @@ describe LotImageUploader do
     uploader.remove!
   end
 
-  its(:extension_whitelist) { is_expected.to eq( %w(jpg jpeg gif png)) }
+  its(:extension_whitelist) { is_expected.to eq(%w(jpg jpeg gif png)) }
 
 =begin
   context 'the thumb version' do
