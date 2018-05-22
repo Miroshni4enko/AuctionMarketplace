@@ -23,3 +23,6 @@
 
 /.idea/*
 /config/properties.env
+
+#Ignore upload files
+/public/uploads

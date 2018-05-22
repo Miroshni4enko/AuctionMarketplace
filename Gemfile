@@ -48,6 +48,7 @@ gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 gem "factory_bot_rails", groups: %i[development test]
 gem "faker", "~> 1.8.7"
 gem "rspec-rails", groups: %i[development test]
+gem 'rspec-its'
 
 gem "annotate"
 gem "dotenv-rails", groups: %i[development test]
@@ -57,3 +58,14 @@ gem "validates_email_format_of"
 
 gem "devise_token_auth"
 gem "omniauth"
+
+#api pagination
+gem 'kaminari'
+#upload lots image
+gem 'carrierwave', '~> 1.0'
+#validates file size
+gem 'file_validators'
+#for create thumbs(a new versions with different dimensions or formats)
+gem 'mini_magick'
+
+gem 'active_model_serializers', '~> 0.10.0'
