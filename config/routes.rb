@@ -9,4 +9,3 @@ Rails.application.routes.draw do
     get '/lots/my', to: 'lots#my'
   end
 end
-

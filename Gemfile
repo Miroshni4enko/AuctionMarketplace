@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 source "https://rubygems.org"
-git_source(:github) {|repo| "https://github.com/#{repo}.git"}
+git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby "2.4.3"
 
@@ -48,8 +48,8 @@ group :test do
   gem "factory_bot_rails"
   gem "faker", "~> 1.8.7"
   gem "rspec-rails"
-  gem 'rspec-its'
-  gem 'database_cleaner'
+  gem "rspec-its"
+  gem "database_cleaner"
 end
 
 gem "annotate"
@@ -61,13 +61,13 @@ gem "validates_email_format_of"
 gem "devise_token_auth"
 gem "omniauth"
 
-#api pagination
-gem 'kaminari'
-#upload lots image
-gem 'carrierwave', '~> 1.0'
-#validates file size
-gem 'file_validators'
-#for create thumbs(a new versions with different dimensions or formats)
-gem 'mini_magick'
+# api pagination
+gem "kaminari"
+# upload lots image
+gem "carrierwave", "~> 1.0"
+# validates file size
+gem "file_validators"
+# for create thumbs(a new versions with different dimensions or formats)
+gem "mini_magick"
 
-gem 'active_model_serializers', '~> 0.10.0'
+gem "active_model_serializers", "~> 0.10.0"
