@@ -18,12 +18,13 @@
 #
 
 class Lot < ApplicationRecord
+  mount_uploader :image, LotImageUploader
   belongs_to :user
   has_one :order, through: :bid
   has_many :bids, dependent: :destroy, inverse_of: :lot
 
   enum status: { pending: 0, in_process: 1, closed: 2 }
-  validates :title, :status, :created_at, :current_price, :estimated_price,
+  validates :title, :status, :current_price, :estimated_price,
             :lot_start_time, :lot_end_time, presence: true
   validates :current_price, :estimated_price,
             numericality: { greater_than_or_equal_to: 0 }
@@ -36,4 +37,10 @@ class Lot < ApplicationRecord
       errors.add(:lot_end_time, "can't be less lot start time")
     end
   end
+
+  #configure image uploader
+  attr_accessor :image, :image_cache, :remove_image
+  validates :image, file_size: { less_than: 1.megabytes }
+  validates_integrity_of  :image
+  validates_processing_of :image
 end
