@@ -4,7 +4,7 @@ DeviseTokenAuth.setup do |config|
 
   # set default redirect url for reset password
   config.default_password_reset_url = "http://token-auth.test"
-  
+
   config.default_confirm_success_url = "/auth/confirmation"
 
   # By default the authorization headers will change after each request. The
