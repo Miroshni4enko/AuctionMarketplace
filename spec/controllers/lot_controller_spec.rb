@@ -144,13 +144,6 @@ RSpec.describe LotsController, type: :controller do
         it "change status" do
           expect(@new_lot.status).to eq("in_process")
         end
-# TODO write test for upload file
-=begin
-image: Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', 'files', 'lot_ex.jpg'), 'image/jpeg')
-        it "uploads file" do
-          expect(@new_lot.image).to be
-        end
-=end
       end
     end
   end
