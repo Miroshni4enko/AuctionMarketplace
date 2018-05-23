@@ -4,7 +4,7 @@ require "rails_helper"
 
 describe "Sign up user flow  ", type: :request do
   let!(:user_params) {
-    user_params = FactoryBot.attributes_for(:random_user_with_success_url_for_sign_up)
+    user_params = FactoryBot.attributes_for(:random_user)
   }
 
 
