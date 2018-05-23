@@ -44,10 +44,10 @@ class LotsController < ApiController
 
   def update
     lot = current_user.lots.where("lots.id": lot_params[:id]).where.not(status: :in_process)
-    if lot && lot.update_all(lot_params.to_hash)
+    if lot && lot.present? && lot.update_all(lot_params.to_hash)
       render status: 200, json: lot
     else
-      render json: lot.errors, status: :unprocessable_entity
+      render json: (lot.errors if lot.present?), status: :unprocessable_entity
     end
   end
 
