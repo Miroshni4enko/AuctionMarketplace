@@ -5,7 +5,7 @@ require "rails_helper"
 describe "Confirmation user before sign in", type: :request do
 
   before(:each) do
-    @user = FactoryBot.create(:user, :unconfirmed)
+    @user = FactoryBot.create(:user, :unconfirmed
   end
   it "should restrict access to sign in without confirm" do
     post "/api/auth/sign_in", params: { email: @user.email, password: @user.password }
