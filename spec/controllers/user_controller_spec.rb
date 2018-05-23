@@ -10,11 +10,10 @@ RSpec.describe UserController, type: :controller do
     end
 
     it "get success result after sign_in" do
-      current_user = FactoryBot.create(:random_user)
+      current_user = FactoryBot.create(:user)
       request.headers.merge! current_user.create_new_auth_token
       get :members_only
       expect(response).to be_successful
     end
   end
-
 end
