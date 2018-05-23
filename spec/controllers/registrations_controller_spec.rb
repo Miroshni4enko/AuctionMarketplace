@@ -4,7 +4,7 @@ require "rails_helper"
 
 describe "Sign up user flow  ", type: :request do
   let!(:user_params) {
-    user_params = FactoryBot.attributes_for(:unconfirmed_user)
+    user_params = FactoryBot.attributes_for(:user, :unconfirmed)
   }
 
 

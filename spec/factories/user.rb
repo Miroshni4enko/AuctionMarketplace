@@ -14,7 +14,5 @@ FactoryBot.define do
       confirmed_at nil
     end
 
-    factory :unconfirmed_user, traits: [:unconfirmed]
   end
-
 end
