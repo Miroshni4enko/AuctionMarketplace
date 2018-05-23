@@ -38,7 +38,7 @@ class Lot < ApplicationRecord
     end
   end
 
-# configure image uploader
+  # configure image uploader
   validates :image, file_size: { less_than: 1.megabytes }
   validates_integrity_of  :image
   validates_processing_of :image

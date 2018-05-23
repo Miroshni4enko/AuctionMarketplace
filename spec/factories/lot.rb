@@ -10,6 +10,10 @@ FactoryBot.define do
     lot_start_time { DateTime.now + 8.days }
     lot_end_time { lot_start_time + 7.days }
 
+    trait :with_in_process_status do
+      status 1
+    end
+
     factory :random_lot_with_image do
       image Rack::Test::UploadedFile.new(File.open(File.join(Rails.root, "spec/fixtures/files/lot_ex.jpg")))
     end

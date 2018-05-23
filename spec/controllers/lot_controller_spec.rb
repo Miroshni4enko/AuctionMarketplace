@@ -14,7 +14,7 @@ RSpec.describe LotsController, type: :controller do
     describe "result after sign in" do
 
       before do
-        current_user = FactoryBot.create(:user, :unconfirmed)
+        current_user = FactoryBot.create(:user)
         request.headers.merge! current_user.create_new_auth_token
         get :index
       end
@@ -49,8 +49,8 @@ RSpec.describe LotsController, type: :controller do
 
     describe "result after sign in" do
       before do
-        @current_user = FactoryBot.create(:user, :unconfirmed)
-        another_user = FactoryBot.create(:user, :unconfirmed)
+        @current_user = FactoryBot.create(:user)
+        another_user = FactoryBot.create(:user)
         10.times do
           FactoryBot.create(:random_lot, user: @current_user)
           FactoryBot.create(:random_lot, user: another_user)
@@ -102,7 +102,7 @@ RSpec.describe LotsController, type: :controller do
 
     describe "result after sign in" do
       before do
-        @current_user = FactoryBot.create(:user, :unconfirmed)
+        @current_user = FactoryBot.create(:user)
         new_lot_params = FactoryBot.attributes_for(:random_lot)
         request.headers.merge! @current_user.create_new_auth_token
         post :create, params: new_lot_params
@@ -112,7 +112,7 @@ RSpec.describe LotsController, type: :controller do
         expect(response).to be_successful
       end
 
-      it "get success result after sign_in" do
+      it "adds should add lot" do
         expect(@current_user.lots.count).to eq(1)
       end
 
@@ -127,9 +127,46 @@ RSpec.describe LotsController, type: :controller do
       end
 
       describe "result after sign in" do
+        describe "update current user lots" do
+          before do
+            current_user = FactoryBot.create(:user)
+            @new_lot = FactoryBot.create(:random_lot, user: current_user)
+            request.headers.merge! current_user.create_new_auth_token
+            put :update,
+                params: { id: @new_lot.id,
+                         status: :in_process }
+            @new_lot.reload
+          end
+
+          it "gets success result after sign_in" do
+            expect(response).to be_successful
+          end
+          it "change status" do
+            expect(@new_lot.status).to eq("in_process")
+          end
+        end
+
+        describe "update current user lots in 'in progress' status"  do
+          before do
+            current_user = FactoryBot.create(:user)
+            @new_lot = FactoryBot.create(:random_lot, :with_in_process_status, user: current_user)
+            request.headers.merge! current_user.create_new_auth_token
+            put :update,
+                params: { id: @new_lot.id,
+                         status: :pending }
+            @new_lot.reload
+          end
+          it " can't change lot in 'in progress' status" do
+            expect(response).to be_unprocessable
+          end
+        end
+      end
+
+      describe " update another user lots" do
         before do
-          current_user = FactoryBot.create(:user, :unconfirmed)
-          @new_lot = FactoryBot.create(:random_lot, user: current_user)
+          current_user = FactoryBot.create(:user)
+          another_user = FactoryBot.create(:user)
+          @new_lot = FactoryBot.create(:random_lot, user: another_user)
           request.headers.merge! current_user.create_new_auth_token
           put :update,
               params: { id: @new_lot.id,
@@ -137,12 +174,8 @@ RSpec.describe LotsController, type: :controller do
           @new_lot.reload
         end
 
-        it "gets success result after sign_in" do
-          expect(response).to be_successful
-          Rails.logger.debug response.body
-        end
-        it "change status" do
-          expect(@new_lot.status).to eq("in_process")
+        it " can't change anther user lot" do
+          expect(response).to be_unprocessable
         end
       end
     end
