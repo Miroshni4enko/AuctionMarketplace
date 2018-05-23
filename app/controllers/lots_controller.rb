@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class Api::V1::LotsController < ApplicationController
-  before_action :authenticate_api_v1_user!
+class LotsController < ApplicationController
+  before_action :authenticate_user!
 
   def index
     lots = Lot.in_process.page(params[:page])
@@ -11,8 +11,8 @@ class Api::V1::LotsController < ApplicationController
   def my
     my_lots = Lot
                   .left_joins(:bids)
-                  .where("lots.user_id": current_api_v1_user.id)
-                  .or(Lot.left_joins(:bids).where("bids.user_id": current_api_v1_user.id))
+                  .where("lots.user_id": current_user.id)
+                  .or(Lot.left_joins(:bids).where("bids.user_id": current_user.id))
                   .page(params[:page])
 
     render json: my_lots, meta: pagination(my_lots), each_serializer: LotSerializer
@@ -21,10 +21,10 @@ class Api::V1::LotsController < ApplicationController
   def show
     lot = Lot
                .find(params[:id])
-               .where(user_id: current_api_v1_user.id)
+               .where(user_id: current_user.id)
                .or(Lot.where(status: :in_process))
                .left_joins(:bids)
-               .or(Lot.left_joins(:bids).where("bids.user_id": api_v1_.id))
+               .or(Lot.left_joins(:bids).where("bids.user_id": current_user.id))
 
     if lot
       render json: lot, serializer: LotWithAssociationSerializer
@@ -34,16 +34,16 @@ class Api::V1::LotsController < ApplicationController
   end
 
   def create
-    lot = current_api_v1_user.lots.build(lot_params)
+    lot = current_user.lots.build(lot_params)
     if lot.save
-      render json: lot, status: :created, location: api_v1_lot_url(lot)
+      render json: lot, status: :created, location: lot_url(lot)
     else
       render json: lot.errors, status: :unprocessable_entity
     end
   end
 
   def update
-    lot = current_api_v1_user.lots.where("lots.id": lot_params[:id]).where.not(status: :in_process)
+    lot = current_user.lots.where("lots.id": lot_params[:id]).where.not(status: :in_process)
     if lot && lot.update_all(lot_params.to_hash)
       render status: 200, json: lot
     else
@@ -52,7 +52,7 @@ class Api::V1::LotsController < ApplicationController
   end
 
   def destroy
-    lot = current_api_v1_user.lots.where("lots.id": lot_params[:id]).where.not(status: :in_process)
+    lot = current_user.lots.where("lots.id": lot_params[:id]).where.not(status: :in_process)
     if lot
       lot.destroy
       render status: 200, format: :json
