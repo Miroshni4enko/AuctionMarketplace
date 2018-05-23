@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class LotsController < ApplicationController
+class LotsController < ApiController
   before_action :authenticate_user!
 
   def index
@@ -64,7 +64,7 @@ class LotsController < ApplicationController
   private
 
     def lot_params
-      params.permit(:lot, :image, :id, :title, :description, :current_price, :created_at,
+      params.permit(:id, :lot, :image, :remove_image, :image_cache, :title, :description, :current_price, :created_at,
                     :estimated_price, :lot_start_time, :lot_end_time, :status)
     end
 
