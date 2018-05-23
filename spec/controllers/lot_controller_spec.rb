@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-RSpec.describe Api::V1::LotsController, type: :controller do
+RSpec.describe LotsController, type: :controller do
   describe "GET #index " do
     describe "result without sign in" do
       it "doesn't give you anything if you don't log in" do
@@ -14,7 +14,7 @@ RSpec.describe Api::V1::LotsController, type: :controller do
     describe "result after sign in" do
 
       before do
-        current_user = FactoryBot.create(:random_user)
+        current_user = FactoryBot.create(:user, :unconfirmed)
         request.headers.merge! current_user.create_new_auth_token
         get :index
       end
@@ -49,8 +49,8 @@ RSpec.describe Api::V1::LotsController, type: :controller do
 
     describe "result after sign in" do
       before do
-        @current_user = FactoryBot.create(:random_user)
-        another_user = FactoryBot.create(:random_user)
+        @current_user = FactoryBot.create(:user, :unconfirmed)
+        another_user = FactoryBot.create(:user, :unconfirmed)
         10.times do
           FactoryBot.create(:random_lot, user: @current_user)
           FactoryBot.create(:random_lot, user: another_user)
@@ -102,7 +102,7 @@ RSpec.describe Api::V1::LotsController, type: :controller do
 
     describe "result after sign in" do
       before do
-        @current_user = FactoryBot.create(:random_user)
+        @current_user = FactoryBot.create(:user, :unconfirmed)
         new_lot_params = FactoryBot.attributes_for(:random_lot)
         request.headers.merge! @current_user.create_new_auth_token
         post :create, params: new_lot_params
@@ -128,7 +128,7 @@ RSpec.describe Api::V1::LotsController, type: :controller do
 
       describe "result after sign in" do
         before do
-          current_user = FactoryBot.create(:random_user)
+          current_user = FactoryBot.create(:user, :unconfirmed)
           @new_lot = FactoryBot.create(:random_lot, user: current_user)
           request.headers.merge! current_user.create_new_auth_token
           put :update,
