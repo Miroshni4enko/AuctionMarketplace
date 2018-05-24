@@ -8,7 +8,7 @@ RSpec.describe LotsController, type: :controller do
 
     before do
       current_user = FactoryBot.create(:user)
-      @new_lot = FactoryBot.create(:random_lot, user: current_user)
+      @new_lot = FactoryBot.create(:lot, user: current_user)
       request.headers.merge! current_user.create_new_auth_token
       put :update,
           params: { id: @new_lot.id,

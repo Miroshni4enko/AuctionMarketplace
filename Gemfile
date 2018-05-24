@@ -50,6 +50,7 @@ group :test do
   gem "rspec-rails"
   gem "rspec-its"
   gem "database_cleaner"
+  gem "rspec-sidekiq"
 end
 
 gem "annotate"
@@ -71,3 +72,5 @@ gem "file_validators"
 gem "mini_magick"
 
 gem "active_model_serializers", "~> 0.10.0"
+
+gem "sidekiq"
