@@ -52,8 +52,8 @@ RSpec.describe LotsController, type: :controller do
         @current_user = FactoryBot.create(:user)
         another_user = FactoryBot.create(:user)
         10.times do
-          FactoryBot.create(:random_lot, user: @current_user)
-          FactoryBot.create(:random_lot, user: another_user)
+          FactoryBot.create(:lot, user: @current_user)
+          FactoryBot.create(:lot, user: another_user)
         end
         request.headers.merge! @current_user.create_new_auth_token
 
@@ -103,7 +103,7 @@ RSpec.describe LotsController, type: :controller do
     describe "result after sign in" do
       before do
         @current_user = FactoryBot.create(:user)
-        new_lot_params = FactoryBot.attributes_for(:random_lot)
+        new_lot_params = FactoryBot.attributes_for(:lot)
         request.headers.merge! @current_user.create_new_auth_token
         post :create, params: new_lot_params
       end
@@ -130,7 +130,7 @@ RSpec.describe LotsController, type: :controller do
         describe "update current user lots" do
           before do
             current_user = FactoryBot.create(:user)
-            @new_lot = FactoryBot.create(:random_lot, user: current_user)
+            @new_lot = FactoryBot.create(:lot, user: current_user)
             request.headers.merge! current_user.create_new_auth_token
             put :update,
                 params: { id: @new_lot.id,
@@ -149,7 +149,7 @@ RSpec.describe LotsController, type: :controller do
         describe "update current user lots in 'in progress' status"  do
           before do
             current_user = FactoryBot.create(:user)
-            @new_lot = FactoryBot.create(:random_lot, :with_in_process_status, user: current_user)
+            @new_lot = FactoryBot.create(:lot, :with_in_process_status, user: current_user)
             request.headers.merge! current_user.create_new_auth_token
             put :update,
                 params: { id: @new_lot.id,
@@ -166,7 +166,7 @@ RSpec.describe LotsController, type: :controller do
         before do
           current_user = FactoryBot.create(:user)
           another_user = FactoryBot.create(:user)
-          @new_lot = FactoryBot.create(:random_lot, user: another_user)
+          @new_lot = FactoryBot.create(:lot, user: another_user)
           request.headers.merge! current_user.create_new_auth_token
           put :update,
               params: { id: @new_lot.id,

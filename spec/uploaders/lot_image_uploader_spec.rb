@@ -6,7 +6,7 @@ require "rails_helper"
 describe LotImageUploader do
   include CarrierWave::Test::Matchers
 
-  let(:lot) { FactoryBot.create(:random_lot) }
+  let(:lot) { FactoryBot.create(:lot) }
   let(:uploader) { LotImageUploader.new(lot, :image) }
 
   before do

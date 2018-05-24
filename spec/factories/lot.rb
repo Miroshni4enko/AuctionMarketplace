@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :random_lot, class: Lot do
+  factory :lot, class: Lot do
     association :user, factory: :user
     title { Faker::Name.title }
     description { Faker::Lorem.sentence(20, false, 0).chop }

@@ -36,6 +36,7 @@ class LotsController < ApiController
   def create
     lot = current_user.lots.build(lot_params)
     if lot.save
+      LotStatusUpdateWorker.perform_at(lot.lot_start_time, lot.id) if lot.status == :pending
       render json: lot, status: :created, location: lot_url(lot)
     else
       render json: lot.errors, status: :unprocessable_entity
