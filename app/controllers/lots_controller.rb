@@ -4,7 +4,18 @@ class LotsController < ApiController
   before_action :authenticate_user!
 
   def index
-    lots = Lot.in_process.page(params[:page])
+    criteria = params[:criteria]
+    if criteria
+      if criteria == "created"
+        lots = current_user.lots.page(params[:page])
+      elsif criteria == "participation"
+        # TODO rewrite to something like user.lots.bids
+        lots = Lot.joins(:bids).where(bids: { user_id: current_user.id }).page(params[:page])
+      elsif criteria == "all"
+        lots = Lot.in_process.page(params[:page])
+      end
+    end
+
     render json: lots, meta: pagination(lots), each_serializer: LotSerializer
   end
 
@@ -68,7 +79,7 @@ class LotsController < ApiController
 
     def lot_params
       params.permit(:id, :lot, :image, :remove_image, :image_cache, :title, :description, :current_price, :created_at,
-                    :estimated_price, :lot_start_time, :lot_end_time, :status)
+                    :estimated_price, :lot_start_time, :lot_end_time, :status, :criteria)
     end
 
     def pagination(paginated_array, per_page = 10)

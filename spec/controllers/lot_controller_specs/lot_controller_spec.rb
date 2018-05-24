@@ -3,50 +3,13 @@
 require "rails_helper"
 
 RSpec.describe LotsController, type: :controller do
-  describe "GET #index " do
-    describe "result without sign in" do
-      it "doesn't give you anything if you don't log in" do
-        get :index
-        expect(response).to have_http_status(401)
-      end
-    end
-
-    describe "result after sign in" do
-
-      before do
-        current_user = FactoryBot.create(:user)
-        request.headers.merge! current_user.create_new_auth_token
-        get :index
-      end
-
-      it "get success result after sign_in" do
-        expect(response).to be_successful
-      end
-
-      it "get Per-Page header = 10" do
-        expect(json_response_body["meta"]["pagination"]["per_page"]).to eq(10)
-      end
-
-      it "get total_pages header" do
-        expect(json_response_body["meta"]["pagination"]["total_pages"]).to be
-      end
-
-      it "get total_lots header" do
-        expect(json_response_body["meta"]["pagination"]["total_lots"]).to be
-      end
-
-    end
-  end
-
   describe "GET #my" do
-
     describe "result without sign in" do
       it "doesn't give you anything if you don't log in" do
         get :my
         expect(response).to have_http_status(401)
       end
     end
-
     describe "result after sign in" do
       before do
         @current_user = FactoryBot.create(:user)
