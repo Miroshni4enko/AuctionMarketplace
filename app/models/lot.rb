@@ -42,4 +42,19 @@ class Lot < ApplicationRecord
   validates :image, file_size: { less_than: 1.megabytes }
   validates_integrity_of  :image
   validates_processing_of :image
+
+  after_destroy :delete_jobs
+
+  def delete_jobs
+    if status != :closed
+      delete_update_status_job :in_process
+      delete_update_status_job :closed
+    end
+  end
+
+  def delete_update_status_job(lot_id = id, updated_status)
+    scheduled = Sidekiq::ScheduledSet.new.select
+    job = scheduled.find { |job| job.klass == LotStatusUpdateWorker && job.args.include(lot_id, updated_status) }
+    job.delete if job
+  end
 end

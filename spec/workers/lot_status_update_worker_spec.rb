@@ -8,7 +8,7 @@ RSpec.describe LotStatusUpdateWorker, type: :worker do
     @new_lot = FactoryBot.create(:lot, :with_in_process_status, user: current_user)
   end
   it "should update lot's status from pending to in_process after lot_start_time" do
-    subject.perform(@new_lot.id)
+    subject.perform(@new_lot.id, :in_process)
     expect(@new_lot.status).to eq("in_process")
   end
 
