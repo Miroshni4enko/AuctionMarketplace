@@ -18,6 +18,8 @@
 #
 
 class Lot < ApplicationRecord
+  attr_accessor :my_lot
+
   mount_uploader :image, LotImageUploader
   belongs_to :user
   has_one :order, through: :bid

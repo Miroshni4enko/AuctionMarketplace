@@ -33,6 +33,12 @@ RSpec.describe LotsController, type: :controller do
         expect(@current_user.lots.map(&:id)).to match_array(@response_lot_ids)
       end
 
+      it "gets 10 lots with attr my_lots = true" do
+        @current_user.reload
+        response_my_lot = json_response_body["lots"].map { |lot_hash| lot_hash["my_lots"] if lot_hash["my_lots"] == true }
+        expect(response_my_lot.count).to eq(10)
+      end
+
       it "has only 10 lots" do
         expect(@response_lot_ids.size).to eq(10)
       end
