@@ -3,91 +3,21 @@
 require "rails_helper"
 
 RSpec.describe LotsController, type: :controller do
-  describe "GET #index " do
+  describe "GET #index" do
     describe "result without sign in" do
       it "doesn't give you anything if you don't log in" do
         get :index
         expect(response).to have_http_status(401)
       end
     end
-
     describe "result after sign in" do
-
+      include_examples "lots_pagination"
+      include_examples "success response"
       before do
         current_user = FactoryBot.create(:user)
         request.headers.merge! current_user.create_new_auth_token
-        get :index
+        get :my, params: { filter: :all }
       end
-
-      it "get success result after sign_in" do
-        expect(response).to be_successful
-      end
-
-      it "get Per-Page header = 10" do
-        expect(json_response_body["meta"]["pagination"]["per_page"]).to eq(10)
-      end
-
-      it "get total_pages header" do
-        expect(json_response_body["meta"]["pagination"]["total_pages"]).to be
-      end
-
-      it "get total_lots header" do
-        expect(json_response_body["meta"]["pagination"]["total_lots"]).to be
-      end
-
-    end
-  end
-
-  describe "GET #my" do
-
-    describe "result without sign in" do
-      it "doesn't give you anything if you don't log in" do
-        get :my
-        expect(response).to have_http_status(401)
-      end
-    end
-
-    describe "result after sign in" do
-      before do
-        @current_user = FactoryBot.create(:user)
-        another_user = FactoryBot.create(:user)
-        10.times do
-          FactoryBot.create(:lot, user: @current_user)
-          FactoryBot.create(:lot, user: another_user)
-        end
-        request.headers.merge! @current_user.create_new_auth_token
-
-        get :my
-
-        @response_lot_ids = json_response_body["lots"].map { |lot_hash| lot_hash["id"] }
-      end
-
-      it "get success result after sign_in" do
-        expect(response).to be_successful
-      end
-
-      it "gets only current user lots" do
-        @current_user.reload
-        expect(@current_user.lots.map(&:id)).to match_array(@response_lot_ids)
-      end
-
-      it "has only 10 lots" do
-        expect(@response_lot_ids.size).to eq(10)
-      end
-
-
-      it "get Per-Page header = 10" do
-        expect(json_response_body["meta"]["pagination"]["per_page"]).to eq(10)
-      end
-
-      it "get total_pages header" do
-        expect(json_response_body["meta"]["pagination"]["total_pages"]).to be
-      end
-
-      it "get total_lots header" do
-        expect(json_response_body["meta"]["pagination"]["total_lots"]).to be
-      end
-
     end
   end
 
@@ -101,6 +31,7 @@ RSpec.describe LotsController, type: :controller do
 
 
     describe "result after sign in" do
+      include_examples "success response"
       before do
         @current_user = FactoryBot.create(:user)
         new_lot_params = FactoryBot.attributes_for(:lot)
@@ -108,14 +39,9 @@ RSpec.describe LotsController, type: :controller do
         post :create, params: new_lot_params
       end
 
-      it "get success result after sign_in" do
-        expect(response).to be_successful
-      end
-
       it "adds should add lot" do
         expect(@current_user.lots.count).to eq(1)
       end
-
     end
 
     describe "Put #update" do
@@ -128,6 +54,7 @@ RSpec.describe LotsController, type: :controller do
 
       describe "result after sign in" do
         describe "update current user lots" do
+          include_examples "success response"
           before do
             current_user = FactoryBot.create(:user)
             @new_lot = FactoryBot.create(:lot, user: current_user)
@@ -138,15 +65,13 @@ RSpec.describe LotsController, type: :controller do
             @new_lot.reload
           end
 
-          it "gets success result after sign_in" do
-            expect(response).to be_successful
-          end
           it "change status" do
             expect(@new_lot.status).to eq("in_process")
           end
         end
 
         describe "update current user lots in 'in progress' status"  do
+          include_examples "unprocessable entity"
           before do
             current_user = FactoryBot.create(:user)
             @new_lot = FactoryBot.create(:lot, :with_in_process_status, user: current_user)
@@ -156,13 +81,11 @@ RSpec.describe LotsController, type: :controller do
                          status: :pending }
             @new_lot.reload
           end
-          it " can't change lot in 'in progress' status" do
-            expect(response).to be_unprocessable
-          end
         end
       end
 
       describe " update another user lots" do
+        include_examples "unprocessable entity"
         before do
           current_user = FactoryBot.create(:user)
           another_user = FactoryBot.create(:user)
@@ -174,9 +97,6 @@ RSpec.describe LotsController, type: :controller do
           @new_lot.reload
         end
 
-        it " can't change anther user lot" do
-          expect(response).to be_unprocessable
-        end
       end
     end
   end
