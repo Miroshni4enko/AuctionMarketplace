@@ -36,8 +36,6 @@ class LotsController < ApiController
   def create
     lot = current_user.lots.build(lot_params)
     if lot.save
-      LotStatusUpdateWorker.perform_at(lot.lot_start_time, lot.id, :in_process) if lot.status == :pending
-      LotStatusUpdateWorker.perform_at(lot.lot_end_time, lot.id, :closed)
       render json: lot, status: :created, location: lot_url(lot)
     else
       render json: lot.errors, status: :unprocessable_entity
@@ -46,8 +44,7 @@ class LotsController < ApiController
 
   def update
     lot = current_user.lots.where("lots.id": lot_params[:id]).where.not(status: :in_process)
-    if lot && lot.present? && lot.update_all(lot_params.to_hash)
-      check_start_and_end_time
+    if lot && lot.present? && lot.update(lot_params)
       render status: 200, json: lot
     else
       render json: (lot.errors if lot.present?), status: :unprocessable_entity
@@ -55,7 +52,7 @@ class LotsController < ApiController
   end
 
   def destroy
-    lot = current_user.lots.where("lots.id": lot_params[:id]).where.not(status: :in_process)
+    lot = current_user.lots.where("lots.id": lot_params[:id]).where.(status: :pending)
     if lot
       lot.destroy
       render status: 200, format: :json
@@ -75,17 +72,5 @@ class LotsController < ApiController
       { pagination: { per_page: per_page.to_i,
                     total_pages: paginated_array.total_pages,
                     total_lots: paginated_array.total_count } }
-    end
-
-    def check_start_and_end_time
-      if lot_params[:lot_start_time]
-        delete_update_status_job lot_params[:id], :in_process
-        LotStatusUpdateWorker.perform_at(lot_params[:lot_start_time], lot_params[:id], :in_process)
-      end
-
-      if lot_params[:lot_end_time]
-        delete_update_status_job lot_params[:id], :closed
-        LotStatusUpdateWorker.perform_at(lot_params[:lot_end_time], lot_params[:id], :closed)
-      end
     end
 end
