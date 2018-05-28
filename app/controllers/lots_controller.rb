@@ -4,28 +4,17 @@ class LotsController < ApiController
   before_action :authenticate_user!
 
   def index
-    lots = Lot.in_process.page(params[:page])
+    lots = Lot.in_process.page(lot_params[:page])
     render json: lots, meta: pagination(lots), each_serializer: LotSerializer
   end
 
   def my
-    my_lots = Lot
-                  .left_joins(:bids)
-                  .where("lots.user_id": current_user.id)
-                  .or(Lot.left_joins(:bids).where("bids.user_id": current_user.id))
-                  .page(params[:page])
-
+    my_lots = Lot.matching_filter_by_user(lot_params[:filter],current_user).page(params[:page])
     render json: my_lots, meta: pagination(my_lots), each_serializer: LotSerializer
   end
 
   def show
-    lot = Lot
-              .find(params[:id])
-              .where(user_id: current_user.id)
-              .or(Lot.where(status: :in_process))
-              .left_joins(:bids)
-              .or(Lot.left_joins(:bids).where("bids.user_id": current_user.id))
-
+    lot = Lot.find(id).show(current_user)
     if lot
       render json: lot, serializer: LotWithAssociationSerializer
     else
@@ -43,7 +32,10 @@ class LotsController < ApiController
   end
 
   def update
+    #SELECT "lots".* FROM "lots" WHERE "lots"."user_id" = $1 AND "lots"."id" = $2 AND "lots"."status" != $3
     lot = current_user.lots.where("lots.id": lot_params[:id]).where.not(status: :in_process)
+    #return - https://www.rubydoc.info/docs/rails/4.1.7/ActiveRecord/AssociationRelation
+    # if lot - not request query, only check on nil
     if lot && lot.present? && lot.update(lot_params)
       render status: 200, json: lot
     else
@@ -65,7 +57,7 @@ class LotsController < ApiController
 
     def lot_params
       params.permit(:id, :lot, :image, :remove_image, :image_cache, :title, :description, :current_price, :created_at,
-                    :estimated_price, :lot_start_time, :lot_end_time, :status)
+                    :estimated_price, :lot_start_time, :lot_end_time, :status, :filter, :page)
     end
 
     def pagination(paginated_array, per_page = 10)
