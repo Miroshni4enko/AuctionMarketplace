@@ -25,8 +25,11 @@ class LotsController < ApiController
                   .where("lots.user_id": current_user.id)
                   .or(Lot.left_joins(:bids).where("bids.user_id": current_user.id))
                   .page(params[:page])
+    my_lots.each do |lot|
+      lot.my_lot = true if lot.user_id = current_user.id
+    end
 
-    render json: my_lots, meta: pagination(my_lots), each_serializer: LotSerializer
+    render json: my_lots, meta: pagination(my_lots), each_serializer: LotWithMyLotsSerializer
   end
 
   def show
