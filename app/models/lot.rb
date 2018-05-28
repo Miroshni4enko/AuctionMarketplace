@@ -44,6 +44,8 @@ class Lot < ApplicationRecord
   validates_processing_of :image
 
   after_destroy :delete_jobs
+  after_create :create_jobs
+  before_update :check_start_and_end_time
 
   def delete_jobs
     if status != :closed
@@ -52,9 +54,26 @@ class Lot < ApplicationRecord
     end
   end
 
+  def create_jobs
+    LotStatusUpdateWorker.perform_at(lot_start_time, id, :in_process)
+    LotStatusUpdateWorker.perform_at(lot_end_time, id, :closed)
+  end
+
   def delete_update_status_job(lot_id = id, updated_status)
     scheduled = Sidekiq::ScheduledSet.new.select
-    job = scheduled.find { |job| job.klass == LotStatusUpdateWorker && job.args.include(lot_id, updated_status) }
+    job = scheduled.find_job(lot_jid)
     job.delete if job
+  end
+
+  def check_start_and_end_time
+    if lot_start_time_changed?
+      delete_update_status_job id, :in_process
+      LotStatusUpdateWorker.perform_at(lot_start_time, id, :in_process)
+    end
+
+    if lot_end_time_changed?
+      delete_update_status_job id, :closed
+      LotStatusUpdateWorker.perform_at(lot_end_time, id, :closed)
+    end
   end
 end
