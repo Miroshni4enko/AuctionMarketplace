@@ -102,4 +102,26 @@ class Lot < ApplicationRecord
       update_status_job :closed
     end
   end
+
+  def self.matching_filter_by_user(filter, user)
+    if filter
+      if filter == "created"
+        user.lots
+      elsif filter == "participation"
+        # TODO rewrite to something like user.lots.bids
+        joins(:bids).where(bids: { user_id: user.id })
+      elsif filter == "all"
+        left_joins(:bids)
+            .where("lots.user_id": user.id)
+            .or(left_joins(:bids).where("bids.user_id": user.id))
+
+      end
+    end
+  end
+
+  scope :show, -> (user) {  where(user_id: user.id)
+                    .or(Lot.where(status: :in_process))
+                    .left_joins(:bids)
+                    .or(Lot.left_joins(:bids).where("bids.user_id": user.id))
+  }
 end
