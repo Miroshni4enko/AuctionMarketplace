@@ -5,10 +5,14 @@
 # Table name: orders
 #
 #  id               :bigint(8)        not null, primary key
-#  bid_id           :bigint(8)
 #  arrival_location :text             not null
 #  arrival_type     :integer          default("pickup"), not null
 #  status           :integer          default("pending"), not null
+#  bid_id           :bigint(8)
+#
+# Indexes
+#
+#  index_orders_on_bid_id  (bid_id)
 #
 
 class Order < ApplicationRecord
