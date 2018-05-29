@@ -35,7 +35,8 @@ ActiveRecord::Schema.define(version: 2018_05_28_110555) do
     t.float "estimated_price", null: false
     t.datetime "lot_start_time", null: false
     t.datetime "lot_end_time", null: false
-    t.integer "lot_jid"
+    t.string "lot_jid_in_process"
+    t.string "lot_jid_closed"
     t.index ["user_id"], name: "index_lots_on_user_id"
   end
 

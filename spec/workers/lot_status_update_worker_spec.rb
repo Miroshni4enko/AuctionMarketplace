@@ -23,8 +23,8 @@ RSpec.describe LotStatusUpdateWorker, type: :worker do
   it { is_expected.to be_processed_in :high }
 
   it "should execute in time" do
-    LotStatusUpdateWorker.perform_at(@new_lot.lot_start_time, @new_lot.id)
+    jid =  LotStatusUpdateWorker.perform_at(@new_lot.lot_start_time, @new_lot.id)
     # expect(LotStatusUpdateWorker.jobs.size).to eq(1)
-    expect(LotStatusUpdateWorker.jobs[0]["at"]).to eq(@new_lot.lot_start_time.to_f)
+    expect(LotStatusUpdateWorker.jobs.find { |job| job["jid"] == jid }["at"]).to eq(@new_lot.lot_start_time.to_f)
   end
 end
