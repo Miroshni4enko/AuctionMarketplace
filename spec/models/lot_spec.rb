@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 # == Schema Information
 #
 # Table name: lots
@@ -15,6 +14,7 @@
 #  lot_start_time     :datetime         not null
 #  status             :integer          default("pending"), not null
 #  title              :text             not null
+#  winning_bid        :integer
 #  created_at         :datetime         not null
 #  user_id            :bigint(8)
 #
