@@ -77,7 +77,7 @@ class Lot < ApplicationRecord
   end
 
   def delete_status_job(updated_status)
-    scheduled = Sidekiq::ScheduledSet.new.select
+    scheduled = Sidekiq::ScheduledSet.new
     if updated_status == :closed
       job = scheduled.find_job(lot_jid_closed)
     end
@@ -119,9 +119,17 @@ class Lot < ApplicationRecord
     end
   end
 
-  scope :show, -> (user) {  where(user_id: user.id)
-                    .or(Lot.where(status: :in_process))
-                    .left_joins(:bids)
-                    .or(Lot.left_joins(:bids).where("bids.user_id": user.id))
+  scope :show, -> (lot_id, user) {
+    where(id: lot_id)
+   .where(user_id: user.id)
+   .or(Lot.where(status: :in_process))
+   .left_joins(:bids)
+   .or(Lot.left_joins(:bids).where("bids.user_id": user.id))
+  }
+
+  scope :pending_lot_by_user, -> (lot_id, user) {
+    where(id: lot_id)
+   .where(user_id: user.id)
+   .where(status: :pending)
   }
 end

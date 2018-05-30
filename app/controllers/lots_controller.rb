@@ -9,12 +9,14 @@ class LotsController < ApiController
   end
 
   def my
-    my_lots = Lot.matching_filter_by_user(lot_params[:filter],current_user).page(params[:page])
+    my_lots = Lot.matching_filter_by_user(lot_params[:filter], current_user).page(params[:page])
     render json: my_lots, meta: pagination(my_lots), each_serializer: LotSerializer
   end
 
   def show
-    lot = Lot.find(id).show(current_user)
+    lot = Lot.show(lot_params[:id], current_user).scoping do
+      Lot.first # SELECT * FROM comments WHERE post_id = 1
+    end
     if lot
       render json: lot, serializer: LotWithAssociationSerializer
     else
@@ -32,11 +34,13 @@ class LotsController < ApiController
   end
 
   def update
-    #SELECT "lots".* FROM "lots" WHERE "lots"."user_id" = $1 AND "lots"."id" = $2 AND "lots"."status" != $3
-    lot = current_user.lots.where("lots.id": lot_params[:id]).where.not(status: :in_process)
-    #return - https://www.rubydoc.info/docs/rails/4.1.7/ActiveRecord/AssociationRelation
+    # SELECT "lots".* FROM "lots" WHERE "lots"."user_id" = $1 AND "lots"."id" = $2 AND "lots"."status" != $3
+    lot = Lot.pending_lot_by_user(lot_params[:id], current_user).scoping do
+      Lot.first # SELECT * FROM comments WHERE post_id = 1
+    end
+    # return - https://www.rubydoc.info/docs/rails/4.1.7/ActiveRecord/AssociationRelation
     # if lot - not request query, only check on nil
-    if lot && lot.present? && lot.update(lot_params)
+    if lot.present? && lot.update(lot_params)
       render status: 200, json: lot
     else
       render json: (lot.errors if lot.present?), status: :unprocessable_entity
@@ -44,7 +48,9 @@ class LotsController < ApiController
   end
 
   def destroy
-    lot = current_user.lots.where("lots.id": lot_params[:id]).where.(status: :pending)
+    lot = Lot.pending_lot_by_user(lot_params[:id], current_user).scoping do
+      Lot.first # SELECT * FROM comments WHERE post_id = 1
+    end
     if lot
       lot.destroy
       render status: 200, format: :json
