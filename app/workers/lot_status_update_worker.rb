@@ -4,8 +4,8 @@ class LotStatusUpdateWorker
   include Sidekiq::Worker
   sidekiq_options queue: "high"
 
-  def perform(lot_id, status)
+  def perform(lot_id)
     lot = Lot.find lot_id
-    lot.update(status: status)
+    lot.update(status: :in_process)
   end
 end

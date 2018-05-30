@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     resources :lots
     get "/lots/my/:filter", to: "lots#my"
 
+    resources :bids, except: :index
     mount Sidekiq::Web, at: "/sidekiq"
   end
 end

@@ -25,7 +25,7 @@ class LotsController < ApiController
   end
 
   def create
-    lot = current_user.lots.build(lot_params)
+    lot = Lot.build(lot_params)
     if lot.save
       render json: lot, status: :created, location: lot_url(lot)
     else

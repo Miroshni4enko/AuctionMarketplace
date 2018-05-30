@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 # == Schema Information
 #
 # Table name: lots
@@ -15,6 +14,7 @@
 #  lot_start_time     :datetime         not null
 #  status             :integer          default("pending"), not null
 #  title              :text             not null
+#  winning_bid        :integer
 #  created_at         :datetime         not null
 #  user_id            :bigint(8)
 #
@@ -29,11 +29,11 @@ class Lot < ApplicationRecord
   has_one :order, through: :bid
   has_many :bids, dependent: :destroy, inverse_of: :lot
 
-  enum status: { pending: 0, in_process: 1, closed: 2 }
+  enum status: {pending: 0, in_process: 1, closed: 2}
   validates :title, :status, :current_price, :estimated_price,
             :lot_start_time, :lot_end_time, presence: true
   validates :current_price, :estimated_price,
-            numericality: { greater_than_or_equal_to: 0 }
+            numericality: {greater_than_or_equal_to: 0}
   validates :lot_start_time, times_in_the_future: true
 
   validate :lot_end_time_cannot_be_less_than_lot_start_time
@@ -45,7 +45,7 @@ class Lot < ApplicationRecord
   end
 
   # configure image uploader
-  validates :image, file_size: { less_than: 1.megabytes }
+  validates :image, file_size: {less_than: 1.megabytes}
   validates_integrity_of :image
   validates_processing_of :image
 
@@ -54,52 +54,58 @@ class Lot < ApplicationRecord
   before_update :check_start_and_end_time
 
   def delete_jobs
-    delete_status_job :in_process
-    delete_status_job :closed
+    delete_status_job
+    delete_closed_job
   end
 
 
   def create_jobs
-    create_status_job :in_process
-    create_status_job :closed
+    create_status_job
+    create_closed_job
   end
 
-  def create_status_job(updated_status)
-    job = LotStatusUpdateWorker.perform_at(lot_end_time, id, updated_status)
-    if updated_status == :closed
-      self.lot_jid_closed = job
-    end
-
-    if updated_status == :in_process
-      self.lot_jid_in_process = job
-    end
+  def create_status_job
+    job = LotStatusUpdateWorker.perform_at(lot_end_time, id)
+    self.lot_jid_in_process = job
     save
   end
 
-  def delete_status_job(updated_status)
+  def delete_status_job
     scheduled = Sidekiq::ScheduledSet.new
-    if updated_status == :closed
-      job = scheduled.find_job(lot_jid_closed)
-    end
-
-    if updated_status == :in_process
-      job = scheduled.find_job(lot_jid_in_process)
-    end
+    job = scheduled.find_job(lot_jid_in_process)
     job.delete if job
   end
 
-  def update_status_job(updated_status)
-    delete_status_job(updated_status)
-    create_status_job(updated_status)
+  def update_status_job
+    delete_status_job
+    create_status_job
   end
+
+  def update_closed_job
+    delete_closed_job
+    create_closed_job
+  end
+
+  def create_closed_job
+    job = LotClosedWorker.perform_at(lot_end_time, id)
+    self.lot_jid_closed = job
+    save
+  end
+
+  def delete_closed_job
+    scheduled = Sidekiq::ScheduledSet.new
+    job = scheduled.find_job(lot_jid_closed)
+    job.delete if job
+  end
+
 
   def check_start_and_end_time
     if lot_start_time_changed?
-      update_status_job :in_process
+      update_status_job
     end
 
     if lot_end_time_changed?
-      update_status_job :closed
+      update_closed_job
     end
   end
 
@@ -109,7 +115,7 @@ class Lot < ApplicationRecord
         user.lots
       elsif filter == "participation"
         # TODO rewrite to something like user.lots.bids
-        joins(:bids).where(bids: { user_id: user.id })
+        joins(:bids).where(bids: {user_id: user.id})
       elsif filter == "all"
         left_joins(:bids)
             .where("lots.user_id": user.id)
@@ -121,15 +127,15 @@ class Lot < ApplicationRecord
 
   scope :show, -> (lot_id, user) {
     where(id: lot_id)
-   .where(user_id: user.id)
-   .or(Lot.where(status: :in_process))
-   .left_joins(:bids)
-   .or(Lot.left_joins(:bids).where("bids.user_id": user.id))
+        .where(user_id: user.id)
+        .or(Lot.where(status: :in_process))
+        .left_joins(:bids)
+        .or(Lot.left_joins(:bids).where("bids.user_id": user.id))
   }
 
   scope :pending_lot_by_user, -> (lot_id, user) {
     where(id: lot_id)
-   .where(user_id: user.id)
-   .where(status: :pending)
+        .where(user_id: user.id)
+        .where(status: :pending)
   }
 end
