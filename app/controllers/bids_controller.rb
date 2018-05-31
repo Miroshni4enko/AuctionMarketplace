@@ -4,9 +4,9 @@ class BidsController < ApiController
   before_action :authenticate_user!
 
   def create
-    lot == Lot.find(lot_id)
+    lot = Lot.find(bid_params[:lot_id])
     if  lot && lot.in_process?
-      bid = current_user.bids.build(lot_params).build(bid_params)
+      bid = current_user.bids.build(bid_params)
       return render json: bid, status: :created, location: bid_url(bid) if bid.save
     end
     render json: bid.errors, status: :unprocessable_entity
