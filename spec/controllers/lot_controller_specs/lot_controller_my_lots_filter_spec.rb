@@ -4,12 +4,7 @@ require "rails_helper"
 
 RSpec.describe LotsController, type: :controller do
   describe "GET #index by criteria " do
-    describe "result without sign in" do
-      it "doesn't give you anything if you don't log in" do
-        get :my, params: { filter: :all }
-        expect(response).to have_http_status(401)
-      end
-    end
+    include_examples "check on auth", "get", :my, params: { filter: :all }
     describe "result with sign in" do
       before :all do
         @current_user = FactoryBot.create(:user)

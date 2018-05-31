@@ -4,12 +4,8 @@ require "rails_helper"
 
 RSpec.describe LotsController, type: :controller do
   describe "GET #index" do
-    describe "result without sign in" do
-      it "doesn't give you anything if you don't log in" do
-        get :index
-        expect(response).to have_http_status(401)
-      end
-    end
+    include_examples "check on auth", "get", :index
+
     describe "result after sign in" do
       include_examples "lots_pagination"
       include_examples "success response"
@@ -22,13 +18,7 @@ RSpec.describe LotsController, type: :controller do
   end
 
   describe "Post #create " do
-    describe "result without sign in" do
-      it "doesn't give you anything if you don't log in" do
-        post :create
-        expect(response).to have_http_status(401)
-      end
-    end
-
+    include_examples "check on auth", "post", :create
 
     describe "result after sign in" do
       include_examples "success response"
@@ -39,7 +29,7 @@ RSpec.describe LotsController, type: :controller do
         post :create, params: new_lot_params
       end
 
-      it "adds should add lot" do
+      it "should add lot" do
         expect(@current_user.lots.count).to eq(1)
       end
       it "should add two jobs" do
@@ -50,12 +40,7 @@ RSpec.describe LotsController, type: :controller do
     end
 
     describe "Put #update" do
-      describe "result without sign in" do
-        it "doesn't give you anything if you don't log in" do
-          put :update, params: { id: 1 }
-          expect(response).to have_http_status(401)
-        end
-      end
+      include_examples "check on auth", "put", :update, params: { id: 1 }
 
       describe "result after sign in" do
         describe "update current user lots" do
@@ -101,7 +86,6 @@ RSpec.describe LotsController, type: :controller do
                        status: :in_process }
           @new_lot.reload
         end
-
       end
     end
   end
