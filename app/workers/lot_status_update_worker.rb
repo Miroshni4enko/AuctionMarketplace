@@ -6,6 +6,8 @@ class LotStatusUpdateWorker
 
   def perform(lot_id)
     lot = Lot.find lot_id
-    lot.update(status: :in_process)
+    if lot && lot.lot_jid_in_process == jid
+      lot.update(status: :in_process)
+    end
   end
 end
