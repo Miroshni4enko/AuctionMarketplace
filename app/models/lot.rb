@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: lots
@@ -29,11 +30,11 @@ class Lot < ApplicationRecord
   has_one :order, through: :bid
   has_many :bids, dependent: :destroy, inverse_of: :lot
 
-  enum status: {pending: 0, in_process: 1, closed: 2}
+  enum status: { pending: 0, in_process: 1, closed: 2 }
   validates :title, :status, :current_price, :estimated_price,
             :lot_start_time, :lot_end_time, presence: true
   validates :current_price, :estimated_price,
-            numericality: {greater_than_or_equal_to: 0}
+            numericality: { greater_than_or_equal_to: 0 }
   validates :lot_start_time, times_in_the_future: true
 
   validate :lot_end_time_cannot_be_less_than_lot_start_time
@@ -45,18 +46,12 @@ class Lot < ApplicationRecord
   end
 
   # configure image uploader
-  validates :image, file_size: {less_than: 1.megabytes}
+  validates :image, file_size: { less_than: 1.megabytes }
   validates_integrity_of :image
   validates_processing_of :image
 
-  before_destroy :delete_jobs
   after_create :create_jobs
   before_update :check_start_and_end_time
-
-  def delete_jobs
-    delete_status_job
-    delete_closed_job
-  end
 
 
   def create_jobs
@@ -70,19 +65,11 @@ class Lot < ApplicationRecord
     save
   end
 
-  def delete_status_job
-    scheduled = Sidekiq::ScheduledSet.new
-    job = scheduled.find_job(lot_jid_in_process)
-    job.delete if job
-  end
-
   def update_status_job
-    delete_status_job
     create_status_job
   end
 
   def update_closed_job
-    delete_closed_job
     create_closed_job
   end
 
@@ -90,12 +77,6 @@ class Lot < ApplicationRecord
     job = LotClosedWorker.perform_at(lot_end_time, id)
     self.lot_jid_closed = job
     save
-  end
-
-  def delete_closed_job
-    scheduled = Sidekiq::ScheduledSet.new
-    job = scheduled.find_job(lot_jid_closed)
-    job.delete if job
   end
 
 
@@ -115,7 +96,7 @@ class Lot < ApplicationRecord
         user.lots
       elsif filter == "participation"
         # TODO rewrite to something like user.lots.bids
-        joins(:bids).where(bids: {user_id: user.id})
+        joins(:bids).where(bids: { user_id: user.id })
       elsif filter == "all"
         left_joins(:bids)
             .where("lots.user_id": user.id)
@@ -138,4 +119,12 @@ class Lot < ApplicationRecord
         .where(user_id: user.id)
         .where(status: :pending)
   }
+
+  def check_current_price(bid_id)
+    if (current_price >= estimated_price)
+      self.lot_jid_closed = nil
+      self.winning_bid = bid_id
+      self.status = :closed
+    end
+  end
 end

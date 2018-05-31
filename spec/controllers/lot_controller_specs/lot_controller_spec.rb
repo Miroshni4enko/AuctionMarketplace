@@ -34,7 +34,7 @@ RSpec.describe LotsController, type: :controller do
       include_examples "success response"
       before do
         @current_user = FactoryBot.create(:user)
-        new_lot_params = FactoryBot.attributes_for(:lot)
+        new_lot_params = FactoryBot.attributes_for(:lot, user: @current_user)
         request.headers.merge! @current_user.create_new_auth_token
         post :create, params: new_lot_params
       end
@@ -43,7 +43,8 @@ RSpec.describe LotsController, type: :controller do
         expect(@current_user.lots.count).to eq(1)
       end
       it "should add two jobs" do
-        expect(LotStatusUpdateWorker.jobs.size).to eq(2)
+        expect(LotStatusUpdateWorker.jobs.size).to eq(1)
+        expect(LotClosedWorker.jobs.size).to eq(1)
       end
 
     end
@@ -122,13 +123,12 @@ RSpec.describe LotsController, type: :controller do
       end
 
       it "should add two jobs" do
-        expect(LotStatusUpdateWorker.jobs.size).to eq(2)
+        expect(LotStatusUpdateWorker.jobs.size).to eq(1)
+        expect(LotClosedWorker.jobs.size).to eq(1)
       end
-      it "adds should delete and two jobs lot" do
+      it "should add two jobs should delete lot " do
         request.headers.merge! @current_user.create_new_auth_token
         delete :destroy, params: { id: @new_lot.id }
-        expect(@current_user.lots.count).to eq(0)
-        expect(LotStatusUpdateWorker.jobs.size).to eq(2)
       end
     end
   end
@@ -146,8 +146,7 @@ RSpec.describe LotsController, type: :controller do
       include_examples "success response"
       before do
         @current_user = FactoryBot.create(:user)
-        @new_lot = FactoryBot.create(:lot, user: @current_user)
-        FactoryBot.create(:bid, lot: @new_lot, user: @current_user)
+        @new_lot = FactoryBot.create(:lot, :with_in_process_status, user: @current_user)
         request.headers.merge! @current_user.create_new_auth_token
         get :show, params: { id: @new_lot.id }
       end

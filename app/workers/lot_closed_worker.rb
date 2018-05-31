@@ -6,9 +6,11 @@ class LotClosedWorker
 
   def perform(lot_id)
     lot = Lot.find lot_id
-    lot.status = :closed
-    win_id = lot.bids.order(proposed_price: :desc, created_at: :desc).first
-    lot.winning_bid = win_id
-    lot.save
+    if lot && lot.lot_jid_closed == self.jid
+      lot.status = :closed
+      win_id = lot.bids.order(proposed_price: :desc, created_at: :desc).first
+      lot.winning_bid = win_id
+      lot.save
+    end
   end
 end
