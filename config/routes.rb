@@ -14,5 +14,6 @@ Rails.application.routes.draw do
     end
 
     mount Sidekiq::Web, at: "/sidekiq"
+    mount ActionCable.server => "/cable"
   end
 end

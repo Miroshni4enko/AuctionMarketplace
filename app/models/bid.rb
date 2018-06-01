@@ -41,4 +41,11 @@ class Bid < ApplicationRecord
       errors.add(:proposed_price, "can't be less than current lot price")
     end
   end
+
+  after_create { BidBroadcastWorker.perform_async(serialize_bid) }
+
+  def serialize_bid
+    serializer = BidSerializer.new(self)
+    ActiveModelSerializers::Adapter.create(serializer).as_json
+  end
 end
