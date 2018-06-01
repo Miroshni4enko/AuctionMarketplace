@@ -28,4 +28,11 @@ class Bid < ApplicationRecord
     lot = Lot.find(lot_id)
     lot.check_prices self if lot
   end
+
+  after_create { BidBroadcastWorker.perform_async(serialize_bid) }
+
+  def serialize_bid
+    serializer = BidSerializer.new(self)
+    ActiveModelSerializers::Adapter.create(serializer).as_json
+  end
 end

@@ -10,19 +10,20 @@ class BidsController < ApiController
     if current_user.id != @lot.user_id
       bid = current_user.bids.build(bid_params)
       if bid.save
+        # ActionCable.server.broadcast "bids_for_lot_#{bid["lot_id"]}_channel", bid: bid.serialize_bid.to_json
         render json: bid, status: :created, serializer: BidSerializer
       else
         render json: bid.errors, status: :unprocessable_entity
       end
     else
-      render json: { error: "Current user can't create bid"  }, status: :forbidden
+      render json: { error: "Current user can't create bid" }, status: :forbidden
     end
   end
 
 
   def index
     bids = @lot.bids
-    render json: bids, each_serializer: BidSerializer,  current_user_id: current_user.id
+    render json: bids, each_serializer: BidSerializer, current_user_id: current_user.id
   end
 
   private

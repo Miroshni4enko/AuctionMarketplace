@@ -59,18 +59,20 @@ RSpec.describe BidsController, type: :controller do
       before do
         @bid = FactoryBot.create(:bid, lot: @lot, user: @another_user)
         request.headers.merge! @another_user.create_new_auth_token
-        get :index, params: { lot_id: @lot.id  }
+        get :index, params: { lot_id: @lot.id }
       end
 
       it "should have responce with equal params " do
-        @serializer = BidSerializer.new(@bid, current_user_id: @another_user.id)
-        @serialization = ActiveModelSerializers::Adapter.create(@serializer)
-        expect(JSON.parse(@serialization.to_json)["bid"]).to eq(json_response_body["bids"][0])
+
+        serializer = BidSerializer.new(@bid, current_user_id: @another_user.id)
+        serialization = ActiveModelSerializers::Adapter.create(serializer)
+        expect(JSON.parse(serialization.to_json)["bid"]).to eq(json_response_body["bids"][0])
+
       end
 
       it "should have encrypt user" do
-        @serializer = BidSerializer.new(@bid, current_user_id: @another_user.id)
-        expect(@serializer.customer_name).to eq(json_response_body["bids"][0]["customer_name"])
+        serializer = BidSerializer.new(@bid, current_user_id: @another_user.id)
+        expect(serializer.customer_name).to eq(json_response_body["bids"][0]["customer_name"])
         expect("You").to eq(json_response_body["bids"][0]["customer_name"])
       end
 
