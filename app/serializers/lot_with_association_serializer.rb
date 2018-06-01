@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 class LotWithAssociationSerializer < LotSerializer
-  has_many :bids
+  has_many :bids, serializer: BidSerializer
 end

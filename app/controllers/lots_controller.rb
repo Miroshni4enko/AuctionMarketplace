@@ -14,13 +14,13 @@ class LotsController < ApiController
   end
 
   def show
-    lot = Lot.show(lot_params[:id], current_user).scoping do
+    lot = Lot.get_to_show(lot_params[:id], current_user).scoping do
       Lot.first # SELECT * FROM comments WHERE post_id = 1
     end
     if lot
       render json: lot, serializer: LotWithAssociationSerializer
     else
-      render_not_found "Object not found"
+      render json: { error: "Lot did not found" }, status: :not_found
     end
   end
 
