@@ -1,6 +1,8 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    action-cable-testing (0.3.1)
+      actioncable (~> 5.0)
     actioncable (5.2.0)
       actionpack (= 5.2.0)
       nio4r (~> 2.0)
@@ -246,6 +248,7 @@ PLATFORMS
   x64-mingw32
 
 DEPENDENCIES
+  action-cable-testing
   active_model_serializers (~> 0.10.0)
   annotate
   bootsnap (>= 1.1.0)
@@ -263,6 +266,7 @@ DEPENDENCIES
   pg (>= 0.18, < 2.0)
   puma (~> 3.11)
   rails (~> 5.2.0)
+  redis (~> 4.0)
   rspec-its
   rspec-rails
   rspec-sidekiq

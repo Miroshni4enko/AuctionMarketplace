@@ -1,0 +1,28 @@
+# frozen_string_literal: true
+
+require "rails_helper"
+require "sidekiq/testing"
+
+RSpec.describe BidBroadcastWorker, type: :worker do
+  setup do
+    Sidekiq::Testing.fake!
+  end
+
+  before do
+    current_user = FactoryBot.create(:user)
+    @lot = FactoryBot.create(:lot, user: current_user)
+    @another_user = FactoryBot.create(:user)
+    @bid = FactoryBot.create(:bid, lot: @lot, user: @another_user)
+  end
+
+  it { is_expected.to be_processed_in :default }
+
+  it "should create job" do
+    expect { BidBroadcastWorker.perform_async(@bid.as_json) }.to change(BidBroadcastWorker.jobs, :size).by(1)
+  end
+
+  it "should create job" do
+    expect { FactoryBot.create(:bid, lot: @lot, user: @another_user) }.to change(BidBroadcastWorker.jobs, :size).by(1)
+  end
+
+end
