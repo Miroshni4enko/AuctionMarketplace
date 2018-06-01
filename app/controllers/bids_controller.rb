@@ -2,17 +2,46 @@
 
 class BidsController < ApiController
   before_action :authenticate_user!
+  before_action :lot_in_process?, only: :create
+  before_action :lot_not_pending?, only: :index
+
 
   def create
-    lot = Lot.find(bid_params[:lot_id])
-    if  lot && lot.in_process?
+    if current_user.id != @lot.user_id
       bid = current_user.bids.build(bid_params)
-      return render json: bid, status: :created, location: bid_url(bid) if bid.save
+      if bid.save
+        render json: bid, status: :created, serializer: BidSerializer
+      else
+        render json: bid.errors, status: :unprocessable_entity
+      end
+    else
+      render json: { error: "Current user can't create bid"  }, status: :forbidden
     end
-    render json: bid.errors, status: :unprocessable_entity
   end
 
-  def bid_params
-    params.permit(:id, :lot_id, :proposed_price, :created_at)
+
+  def index
+    bids = @lot.bids
+    render json: bids, each_serializer: BidSerializer,  current_user_id: current_user.id
   end
+
+  private
+
+    def lot_in_process?
+      @lot = Lot.find(bid_params[:lot_id])
+      unless @lot && @lot.in_process?
+        render json: { error: "Lot did not found" }, status: :not_found
+      end
+    end
+
+    def lot_not_pending?
+      @lot = Lot.find(bid_params[:lot_id])
+      if !@lot && @lot.pending?
+        render json: { error: "Lot not found" }, status: :not_found
+      end
+    end
+
+    def bid_params
+      params.permit(:id, :lot_id, :proposed_price)
+    end
 end

@@ -55,38 +55,29 @@ class Lot < ApplicationRecord
 
 
   def create_jobs
-    create_status_job
-    create_closed_job
+    status_job = LotStatusUpdateWorker.perform_at(lot_start_time, id)
+    closed_job = LotClosedWorker.perform_at(lot_end_time, id)
+    update_columns(lot_jid_in_process: status_job, lot_jid_closed: closed_job)
   end
 
   def create_status_job
-    job = LotStatusUpdateWorker.perform_at(lot_end_time, id)
-    self.lot_jid_in_process = job
-    save
-  end
-
-  def update_status_job
-    create_status_job
-  end
-
-  def update_closed_job
-    create_closed_job
+    job = LotStatusUpdateWorker.perform_at(lot_start_time, id)
+    update_column(:lot_jid_in_process, job)
   end
 
   def create_closed_job
     job = LotClosedWorker.perform_at(lot_end_time, id)
-    self.lot_jid_closed = job
-    save
+    update_column(:lot_jid_closed, job)
   end
 
 
   def check_start_and_end_time
     if lot_start_time_changed?
-      update_status_job
+      create_status_job
     end
 
     if lot_end_time_changed?
-      update_closed_job
+      create_closed_job
     end
   end
 
@@ -106,7 +97,7 @@ class Lot < ApplicationRecord
     end
   end
 
-  scope :show, -> (lot_id, user) {
+  scope :get_to_show, -> (lot_id, user) {
     where(id: lot_id)
         .where(user_id: user.id)
         .or(Lot.where(status: :in_process))
@@ -120,11 +111,15 @@ class Lot < ApplicationRecord
         .where(status: :pending)
   }
 
-  def check_current_price(bid_id)
-    if (current_price >= estimated_price)
-      self.lot_jid_closed = nil
-      self.winning_bid = bid_id
-      self.status = :closed
+  def check_prices(bid)
+    if bid
+      self.current_price = bid.proposed_price if bid.proposed_price > self.current_price
+      if (self.current_price >= self.estimated_price)
+        self.lot_jid_closed = nil
+        self.winning_bid = bid.id
+        self.status = :closed
+      end
+      save
     end
   end
 end

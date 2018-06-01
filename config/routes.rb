@@ -7,10 +7,12 @@ Rails.application.routes.draw do
     get "user/members_only", to: "user#members_only"
     mount_devise_token_auth_for "User", at: "auth", defaults: { format: :json }
 
-    resources :lots
-    get "/lots/my/:filter", to: "lots#my"
 
-    resources :bids, except: :index
+    get "/lots/my/:filter", to: "lots#my"
+    resources :lots do
+      resources :bids, except: [:show, :update, :destroy]
+    end
+
     mount Sidekiq::Web, at: "/sidekiq"
   end
 end

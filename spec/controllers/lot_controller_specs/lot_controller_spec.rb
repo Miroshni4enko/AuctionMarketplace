@@ -12,7 +12,7 @@ RSpec.describe LotsController, type: :controller do
       before do
         current_user = FactoryBot.create(:user)
         request.headers.merge! current_user.create_new_auth_token
-        get :my, params: { filter: :all }
+        get :index
       end
     end
   end
