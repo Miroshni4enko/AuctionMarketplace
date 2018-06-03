@@ -25,4 +25,11 @@ RSpec.describe BidBroadcastWorker, type: :worker do
     expect { FactoryBot.create(:bid, lot: @lot, user: @another_user) }.to change(BidBroadcastWorker.jobs, :size).by(1)
   end
 
+  it "should broadcast" do
+    Sidekiq::Testing.inline! do
+      expect { BidBroadcastWorker.perform_async(@bid.as_json) }.to have_broadcasted_to("bids_for_lot_#{@lot.id}_channel")
+    end
+  end
+
+
 end

@@ -47,13 +47,15 @@ gem "tzinfo-data", platforms: %i[mingw mswin x64_mingw jruby]
 group :test do
   gem "factory_bot_rails"
   gem "faker", "~> 1.8.7"
-  gem "rspec-rails"
   gem "rspec-its"
   gem "database_cleaner"
   gem "rspec-sidekiq"
+  gem "action-cable-testing"
+  gem "shoulda-callback-matchers", "~> 1.1.1"
 end
 
 gem "annotate"
+gem "rspec-rails", groups: %i[development test]
 gem "dotenv-rails", groups: %i[development test]
 gem "rubocop", "~> 0.55.0", require: false
 gem "rubocop-rails"
@@ -74,4 +76,3 @@ gem "mini_magick"
 gem "active_model_serializers", "~> 0.10.0"
 
 gem "sidekiq"
-gem "action-cable-testing"
