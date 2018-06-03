@@ -46,7 +46,5 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
-  Rails.application.configure do
-    config.action_cable.url = "ws://localhost:3000/cable"
-  end
+  config.action_cable.url = "ws://localhost:3000/cable"
 end

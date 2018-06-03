@@ -42,10 +42,14 @@ class Bid < ApplicationRecord
     end
   end
 
-  after_create { BidBroadcastWorker.perform_async(serialize_bid) }
+  after_create :perform_broadcast
 
   def serialize_bid
     serializer = BidSerializer.new(self)
     ActiveModelSerializers::Adapter.create(serializer).as_json
+  end
+
+  def perform_broadcast
+    BidBroadcastWorker.perform_async(serialize_bid)
   end
 end

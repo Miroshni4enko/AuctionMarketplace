@@ -18,6 +18,9 @@
 
 require "rails_helper"
 RSpec.describe Bid, type: :model do
+
+  it { is_expected.to callback(:perform_broadcast).after(:create) }
+
   describe "# validation of proposed price" do
     it "should restrict proposed price less than current" do
       current_user = FactoryBot.create(:user)
