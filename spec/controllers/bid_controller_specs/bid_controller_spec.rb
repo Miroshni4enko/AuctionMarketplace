@@ -50,7 +50,6 @@ RSpec.describe BidsController, type: :controller do
     end
   end
 
-
   describe "GET #index" do
     include_examples "check on auth", "get", :index, params: { lot_id: 1 }
 

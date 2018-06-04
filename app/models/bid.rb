@@ -22,10 +22,16 @@ class Bid < ApplicationRecord
   has_one :order, dependent: :destroy
   validates :proposed_price, presence: true
   validates :proposed_price, numericality: { greater_than_or_equal_to: 0 }
+  validate :check_proposed_price
   after_create :check_lot_prices
 
   def check_lot_prices
-    lot = Lot.find(lot_id)
-    lot.check_prices self if lot
+    self.lot.check_estimated_prices self
+  end
+
+  def check_proposed_price
+    if lot.current_price > proposed_price
+      errors.add(:proposed_price, "can't be less than current lot price")
+    end
   end
 end

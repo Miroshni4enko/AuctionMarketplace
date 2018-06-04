@@ -86,13 +86,11 @@ class Lot < ApplicationRecord
       if filter == "created"
         user.lots
       elsif filter == "participation"
-        # TODO rewrite to something like user.lots.bids
         joins(:bids).where(bids: { user_id: user.id })
       elsif filter == "all"
         left_joins(:bids)
             .where("lots.user_id": user.id)
             .or(left_joins(:bids).where("bids.user_id": user.id))
-
       end
     end
   end
@@ -111,15 +109,12 @@ class Lot < ApplicationRecord
         .where(status: :pending)
   }
 
-  def check_prices(bid)
-    if bid
-      self.current_price = bid.proposed_price if bid.proposed_price > self.current_price
+  def check_estimated_prices(bid)
       if (self.current_price >= self.estimated_price)
         self.lot_jid_closed = nil
         self.winning_bid = bid.id
         self.status = :closed
+        save
       end
-      save
-    end
   end
 end
