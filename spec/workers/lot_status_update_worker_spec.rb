@@ -7,16 +7,11 @@ RSpec.describe LotStatusUpdateWorker, type: :worker do
     current_user = FactoryBot.create(:user)
     @new_lot = FactoryBot.create(:lot, user: current_user)
   end
-=begin
-  it "should update lot's status from pending to in_process after lot_start_time" do
-    expect(@new_lot.status).to eq("in_process")
-  end
-=end
 
   it { is_expected.to be_processed_in :high }
 
   it "should execute in time" do
-    jid =  LotStatusUpdateWorker.perform_at(@new_lot.lot_start_time, @new_lot.id)
+    jid =  LotStatusUpdateWorker.perform_at(@new_lot.lot_start_time, @new_lot.id, :in_process)
     # expect(LotStatusUpdateWorker.jobs.size).to eq(1)
     expect(LotStatusUpdateWorker.jobs.find { |job| job["jid"] == jid }["at"]).to eq(@new_lot.lot_start_time.to_f)
   end
