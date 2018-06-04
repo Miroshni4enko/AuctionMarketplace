@@ -18,7 +18,7 @@ class LotsController < ApiController
     if lot
       render json: lot, serializer: LotWithAssociationSerializer
     else
-      render json: { error: "Lot did not found" }, status: :not_found
+      lot_not_found
     end
   end
 
@@ -46,7 +46,7 @@ class LotsController < ApiController
       lot.destroy
       render status: 200, format: :json
     else
-      render_not_found "Object not found, or can't be deleted"
+      lot_not_found
     end
   end
 
