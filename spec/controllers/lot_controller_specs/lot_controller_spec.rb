@@ -100,7 +100,6 @@ RSpec.describe LotsController, type: :controller do
 
 
     describe "result after sign in" do
-
       it "should delete lot and two jobs" do
         Sidekiq::Testing.inline! do
           ss = Sidekiq::ScheduledSet.new
