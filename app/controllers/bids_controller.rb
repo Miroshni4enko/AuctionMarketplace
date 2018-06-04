@@ -2,8 +2,8 @@
 
 class BidsController < ApiController
   before_action :authenticate_user!
-  before_action :lot_in_process?, only: :create
-  before_action :lot_not_pending?, only: :index
+  before_action :check_lot_in_process, only: :create
+  before_action :check_lot_not_pending, only: :index
 
 
   def create
@@ -27,14 +27,14 @@ class BidsController < ApiController
 
   private
 
-    def lot_in_process?
+    def check_lot_in_process
       @lot = Lot.find(bid_params[:lot_id])
       unless @lot && @lot.in_process?
         render json: { error: "Lot did not found" }, status: :not_found
       end
     end
 
-    def lot_not_pending?
+    def check_lot_not_pending
       @lot = Lot.find(bid_params[:lot_id])
       if !@lot && @lot.pending?
         render json: { error: "Lot not found" }, status: :not_found

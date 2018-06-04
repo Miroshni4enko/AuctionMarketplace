@@ -14,9 +14,7 @@ class LotsController < ApiController
   end
 
   def show
-    lot = Lot.get_to_show(lot_params[:id], current_user).scoping do
-      Lot.first # SELECT * FROM comments WHERE post_id = 1
-    end
+    lot = Lot.get_to_show(lot_params[:id], current_user).first
     if lot
       render json: lot, serializer: LotWithAssociationSerializer
     else
@@ -34,23 +32,16 @@ class LotsController < ApiController
   end
 
   def update
-    # SELECT "lots".* FROM "lots" WHERE "lots"."user_id" = $1 AND "lots"."id" = $2 AND "lots"."status" != $3
-    lot = Lot.pending_lot_by_user(lot_params[:id], current_user).scoping do
-      Lot.first # SELECT * FROM comments WHERE post_id = 1
-    end
-    # return - https://www.rubydoc.info/docs/rails/4.1.7/ActiveRecord/AssociationRelation
-    # if lot - not request query, only check on nil
+    lot = Lot.pending_lot_by_user(lot_params[:id], current_user).first
     if lot.present? && lot.update(lot_params)
       render status: 200, json: lot
     else
-      render json: (lot.errors if lot.present?), status: :unprocessable_entity
+      render json: (lot.errors if lot), status: :unprocessable_entity
     end
   end
 
   def destroy
-    lot = Lot.pending_lot_by_user(lot_params[:id], current_user).scoping do
-      Lot.first # SELECT * FROM comments WHERE post_id = 1
-    end
+    lot = Lot.pending_lot_by_user(lot_params[:id], current_user).first
     if lot
       lot.destroy
       render status: 200, format: :json

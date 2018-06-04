@@ -18,4 +18,13 @@
 
 require "rails_helper"
 RSpec.describe Bid, type: :model do
+  describe "# validation of proposed price" do
+    it "should restrict proposed price less than current" do
+      current_user = FactoryBot.create(:user)
+      lot = FactoryBot.create(:lot, :with_in_process_status, user: current_user)
+      bid = lot.bids.new(proposed_price: 0.00)
+      bid.valid?
+      expect(bid.errors[:proposed_price]).to include("can't be less than current lot price")
+    end
+  end
 end
