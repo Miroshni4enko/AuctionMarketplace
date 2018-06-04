@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rails_helper"
+require "sidekiq/testing"
 
 RSpec.describe LotsController, type: :controller do
   describe "GET #index" do
@@ -33,8 +34,7 @@ RSpec.describe LotsController, type: :controller do
         expect(@current_user.lots.count).to eq(1)
       end
       it "should add two jobs" do
-        expect(LotStatusUpdateWorker.jobs.size).to eq(1)
-        expect(LotClosedWorker.jobs.size).to eq(1)
+        expect(LotStatusUpdateWorker.jobs.size).to eq(2)
       end
 
     end
@@ -100,19 +100,18 @@ RSpec.describe LotsController, type: :controller do
 
 
     describe "result after sign in" do
-      include_examples "success response"
-      before do
-        @current_user = FactoryBot.create(:user)
-        @new_lot = FactoryBot.create(:lot, user: @current_user)
-      end
 
-      it "should add two jobs" do
-        expect(LotStatusUpdateWorker.jobs.size).to eq(1)
-        expect(LotClosedWorker.jobs.size).to eq(1)
-      end
-      it "should add two jobs should delete lot " do
-        request.headers.merge! @current_user.create_new_auth_token
-        delete :destroy, params: { id: @new_lot.id }
+      it "should delete lot and two jobs" do
+        Sidekiq::Testing.inline! do
+          ss = Sidekiq::ScheduledSet.new
+          ss.clear
+          @current_user = FactoryBot.create(:user)
+          @new_lot = FactoryBot.create(:lot, user: @current_user)
+          request.headers.merge! @current_user.create_new_auth_token
+          delete :destroy, params: { id: @new_lot.id }
+          expect(ss.size).to eq(0)
+          expect(@current_user.lots.count).to eq(0)
+        end
       end
     end
   end
@@ -136,11 +135,7 @@ RSpec.describe LotsController, type: :controller do
       end
 
       it "should have responce with equal params " do
-
-        # Create a serializer instance
         @serializer = LotWithAssociationSerializer.new(@new_lot)
-        # TODO create test for JSON format
-        # Create a serialization based on the configured adapter
         @serialization = ActiveModelSerializers::Adapter.create(@serializer)
         expect(JSON.parse(@serialization.to_json)).to eq(json_response_body)
       end

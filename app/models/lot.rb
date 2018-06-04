@@ -50,34 +50,23 @@ class Lot < ApplicationRecord
   validates_integrity_of :image
   validates_processing_of :image
 
-  after_create :create_jobs
+  after_create :create_jobs!
   before_update :check_start_and_end_time
 
 
-  def create_jobs
-    status_job = LotStatusUpdateWorker.perform_at(lot_start_time, id)
-    closed_job = LotClosedWorker.perform_at(lot_end_time, id)
-    update_columns(lot_jid_in_process: status_job, lot_jid_closed: closed_job)
+  def create_jobs!
+    to_in_process_job = create_status_job :in_process
+    to_close_job = create_status_job :closed
+    update_columns(lot_jid_in_process: to_in_process_job, lot_jid_closed: to_close_job)
   end
-
-  def create_status_job
-    job = LotStatusUpdateWorker.perform_at(lot_start_time, id)
-    update_column(:lot_jid_in_process, job)
-  end
-
-  def create_closed_job
-    job = LotClosedWorker.perform_at(lot_end_time, id)
-    update_column(:lot_jid_closed, job)
-  end
-
 
   def check_start_and_end_time
     if lot_start_time_changed?
-      create_status_job
+      create_status_job! :in_process
     end
 
     if lot_end_time_changed?
-      create_closed_job
+      create_status_job! :closed
     end
   end
 
@@ -109,12 +98,31 @@ class Lot < ApplicationRecord
         .where(status: :pending)
   }
 
+
+  def create_status_job (status)
+    if status == :in_process
+      LotStatusUpdateWorker.perform_at(lot_start_time, id, status)
+    elsif status == :closed
+      LotStatusUpdateWorker.perform_at(lot_end_time, id, status)
+    end
+  end
+
+
+  def create_status_job! (status)
+    job = create_status_job status
+    if status == :in_process
+      update_column(:lot_jid_in_process, job)
+    elsif status == :closed
+      update_column(:lot_jid_closed, job)
+    end
+  end
+
   def check_estimated_prices(bid)
-      if (self.current_price >= self.estimated_price)
-        self.lot_jid_closed = nil
-        self.winning_bid = bid.id
-        self.status = :closed
-        save
-      end
+    if (self.current_price >= self.estimated_price)
+      self.lot_jid_closed = nil
+      self.winning_bid = bid.id
+      self.status = :closed
+      save
+    end
   end
 end

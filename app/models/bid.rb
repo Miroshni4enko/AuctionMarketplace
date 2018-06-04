@@ -23,14 +23,21 @@ class Bid < ApplicationRecord
   validates :proposed_price, presence: true
   validates :proposed_price, numericality: { greater_than_or_equal_to: 0 }
   validate :check_proposed_price
-  after_create :check_lot_prices
+  after_create :check_bid_is_winner
+  after_create :update_current_price_of_lot
 
-  def check_lot_prices
+  def check_bid_is_winner
     self.lot.check_estimated_prices self
   end
 
+  def update_current_price_of_lot
+    lot.current_price = proposed_price
+    lot.winning_bid = id
+    save
+  end
+
   def check_proposed_price
-    if lot.current_price > proposed_price
+    if proposed_price <= lot.current_price
       errors.add(:proposed_price, "can't be less than current lot price")
     end
   end
