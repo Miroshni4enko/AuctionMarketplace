@@ -21,11 +21,33 @@ RSpec.describe Bid, type: :model do
 
   it { is_expected.to callback(:perform_broadcast).after(:create) }
 
-  describe "# validation of proposed price" do
+  it { is_expected.to callback(:update_current_price_of_lot).after(:create) }
+
+  it { is_expected.to callback(:check_bid_is_winner).after(:create) }
+
+  describe "checking prices of lots" do
+
+    before do
+      @current_user = FactoryBot.create(:user)
+      @lot = FactoryBot.create(:lot, :with_in_process_status, user: @current_user)
+    end
+
+    it "should update current price of lot" do
+      bid = FactoryBot.build(:bid, lot: @lot, user: @user)
+      bid.update_current_price_of_lot
+      expect(@lot.current_price).to eq(bid.proposed_price)
+      expect(@lot.winning_bid).to eq(bid.id)
+    end
+
+    it "check_bid_is_winner" do
+      bid = @lot.bids.new(proposed_price: @lot.estimated_price + 2.00)
+      bid.check_bid_is_winner
+      expect(@lot.status).to eq("closed")
+      expect(@lot.lot_jid_closed).to eq(nil)
+    end
+
     it "should restrict proposed price less than current" do
-      current_user = FactoryBot.create(:user)
-      lot = FactoryBot.create(:lot, :with_in_process_status, user: current_user)
-      bid = lot.bids.new(proposed_price: 0.00)
+      bid = @lot.bids.new(proposed_price: 0.00)
       bid.valid?
       expect(bid.errors[:proposed_price]).to include("can't be less than current lot price")
     end

@@ -25,6 +25,7 @@ class Bid < ApplicationRecord
   validate :check_proposed_price
   after_create :check_bid_is_winner
   after_create :update_current_price_of_lot
+  after_create :perform_broadcast
 
   def check_bid_is_winner
     self.lot.check_estimated_prices self
@@ -41,8 +42,6 @@ class Bid < ApplicationRecord
       errors.add(:proposed_price, "can't be less than current lot price")
     end
   end
-
-  after_create :perform_broadcast
 
   def serialize_bid
     serializer = BidSerializer.new(self)
