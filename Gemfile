@@ -62,7 +62,6 @@ gem "rubocop-rails"
 gem "validates_email_format_of"
 
 gem "devise_token_auth"
-gem "omniauth"
 
 # api pagination
 gem "kaminari"
