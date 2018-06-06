@@ -7,12 +7,12 @@ RSpec.describe LotsController, type: :controller do
     include_examples "check on auth", "get", :my, params: { filter: :all }
     describe "result with sign in" do
       before :all do
-        @current_user = FactoryBot.create(:user)
+        @user = FactoryBot.create(:user)
         another_user = FactoryBot.create(:user)
         10.times do
-          FactoryBot.create(:lot, user: @current_user)
+          FactoryBot.create(:lot, user: @user)
           another_user_lot = FactoryBot.create(:lot, user: another_user)
-          FactoryBot.create(:bid, lot: another_user_lot, user: @current_user)
+          FactoryBot.create(:bid, lot: another_user_lot, user: @user)
         end
       end
       describe " by created criteria" do
@@ -20,19 +20,19 @@ RSpec.describe LotsController, type: :controller do
         include_examples "success response"
 
         before :each do
-          request.headers.merge! @current_user.create_new_auth_token
+          login @user
           get :my, params: { filter: :created }
         end
 
         it "get only current users lots that user create for sale" do
-          @current_user.reload
+          @user.reload
           response_lot_ids = json_response_body["lots"].map { |lot_hash| lot_hash["id"] }
-          expect(@current_user.lots.map(&:id)).to match_array(response_lot_ids)
+          expect(@user.lots.map(&:id)).to match_array(response_lot_ids)
         end
 
         it "get only lots that user create for sale" do
           response_lot_ids = json_response_body["lots"].map { |lot_hash| lot_hash["id"] }
-          expect(@current_user.lots.map(&:id)).to match_array(response_lot_ids)
+          expect(@user.lots.map(&:id)).to match_array(response_lot_ids)
         end
       end
 
@@ -40,14 +40,14 @@ RSpec.describe LotsController, type: :controller do
         include_examples "lots_pagination"
         include_examples "success response"
         before :each do
-          request.headers.merge! @current_user.create_new_auth_token
+          login @user
           get :my, params: { filter: :participation }
         end
 
         it "get only current users lots that user won/try to win" do
-          @current_user.reload
+          @user.reload
           response_lot_ids = json_response_body["lots"].map { |lot_hash| lot_hash["id"] }
-          expect(Lot.joins(:bids).where(bids: { user_id: @current_user.id }).map(&:id)).to match_array(response_lot_ids)
+          expect(Lot.joins(:bids).where(bids: { user_id: @user.id }).map(&:id)).to match_array(response_lot_ids)
         end
       end
 
@@ -55,13 +55,13 @@ RSpec.describe LotsController, type: :controller do
         include_examples "lots_pagination"
         include_examples "success response"
         before do
-          @current_user = FactoryBot.create(:user)
+          login
           another_user = FactoryBot.create(:user)
           10.times do
-            FactoryBot.create(:lot, user: @current_user)
+            FactoryBot.create(:lot, user: @user)
             FactoryBot.create(:lot, user: another_user)
           end
-          request.headers.merge! @current_user.create_new_auth_token
+
 
           get :my, params: { filter: :all }
 
@@ -69,8 +69,8 @@ RSpec.describe LotsController, type: :controller do
         end
 
         it "gets only current user lots" do
-          @current_user.reload
-          expect(@current_user.lots.map(&:id)).to match_array(@response_lot_ids)
+          @user.reload
+          expect(@user.lots.map(&:id)).to match_array(@response_lot_ids)
         end
 
         it "has only 10 lots" do
@@ -79,9 +79,5 @@ RSpec.describe LotsController, type: :controller do
 
       end
     end
-  end
-
-  def json_response_body
-    JSON.parse(response.body)
   end
 end

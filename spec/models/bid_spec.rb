@@ -28,8 +28,8 @@ RSpec.describe Bid, type: :model do
   describe "checking prices of lots" do
 
     before do
-      @current_user = FactoryBot.create(:user)
-      @lot = FactoryBot.create(:lot, :with_in_process_status, user: @current_user)
+      @user = FactoryBot.create(:user)
+      @lot = FactoryBot.create(:lot, :with_in_process_status, user: @user)
     end
 
     it "should update current price of lot" do

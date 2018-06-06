@@ -9,9 +9,8 @@ RSpec.describe LotsController, type: :controller do
     let(:image) { "lot_ex.jpg" }
 
     before do
-      current_user = FactoryBot.create(:user)
-      @new_lot = FactoryBot.create(:lot, user: current_user)
-      request.headers.merge! current_user.create_new_auth_token
+      login
+      @new_lot = FactoryBot.create(:lot, user: @user)
       # alternative way ti upload file from fixture fixture_file_upload( "./spec/fixtures/files/lot_ex.jpg", "image/jpeg") }
       put :update,
           params: { id: @new_lot.id,

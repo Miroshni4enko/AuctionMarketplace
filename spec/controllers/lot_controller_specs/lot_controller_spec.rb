@@ -11,8 +11,7 @@ RSpec.describe LotsController, type: :controller do
       include_examples "lots_pagination"
       include_examples "success response"
       before do
-        current_user = FactoryBot.create(:user)
-        request.headers.merge! current_user.create_new_auth_token
+        login
         get :index
       end
     end
@@ -24,14 +23,13 @@ RSpec.describe LotsController, type: :controller do
     describe "result after sign in" do
       include_examples "success response"
       before do
-        @current_user = FactoryBot.create(:user)
-        new_lot_params = FactoryBot.attributes_for(:lot, user: @current_user)
-        request.headers.merge! @current_user.create_new_auth_token
+        login
+        new_lot_params = FactoryBot.attributes_for(:lot, user: @user)
         post :create, params: new_lot_params
       end
 
       it "should add lot" do
-        expect(@current_user.lots.count).to eq(1)
+        expect(@user.lots.count).to eq(1)
       end
       it "should add two jobs" do
         expect(LotStatusUpdateWorker.jobs.size).to eq(2)
@@ -46,9 +44,8 @@ RSpec.describe LotsController, type: :controller do
         describe "update current user lots" do
           include_examples "success response"
           before do
-            current_user = FactoryBot.create(:user)
-            @new_lot = FactoryBot.create(:lot, user: current_user)
-            request.headers.merge! current_user.create_new_auth_token
+            login
+            @new_lot = FactoryBot.create(:lot, user: @user)
             put :update,
                 params: { id: @new_lot.id,
                          status: :in_process }
@@ -63,9 +60,9 @@ RSpec.describe LotsController, type: :controller do
         describe "update current user lots in 'in progress' status" do
           include_examples "unprocessable entity"
           before do
-            current_user = FactoryBot.create(:user)
-            @new_lot = FactoryBot.create(:lot, :with_in_process_status, user: current_user)
-            request.headers.merge! current_user.create_new_auth_token
+            login
+            @new_lot = FactoryBot.create(:lot, :with_in_process_status, user: @user)
+
             put :update,
                 params: { id: @new_lot.id,
                          status: :pending }
@@ -77,10 +74,9 @@ RSpec.describe LotsController, type: :controller do
       describe " update another user lots" do
         include_examples "unprocessable entity"
         before do
-          current_user = FactoryBot.create(:user)
+          login
           another_user = FactoryBot.create(:user)
           @new_lot = FactoryBot.create(:lot, user: another_user)
-          request.headers.merge! current_user.create_new_auth_token
           put :update,
               params: { id: @new_lot.id,
                        status: :in_process }
@@ -104,12 +100,11 @@ RSpec.describe LotsController, type: :controller do
         Sidekiq::Testing.inline! do
           ss = Sidekiq::ScheduledSet.new
           ss.clear
-          @current_user = FactoryBot.create(:user)
-          @new_lot = FactoryBot.create(:lot, user: @current_user)
-          request.headers.merge! @current_user.create_new_auth_token
+          login
+          @new_lot = FactoryBot.create(:lot, user: @user)
           delete :destroy, params: { id: @new_lot.id }
           expect(ss.size).to eq(0)
-          expect(@current_user.lots.count).to eq(0)
+          expect(@user.lots.count).to eq(0)
         end
       end
     end
@@ -127,9 +122,8 @@ RSpec.describe LotsController, type: :controller do
     describe "result after sign in" do
       include_examples "success response"
       before do
-        @current_user = FactoryBot.create(:user)
-        @new_lot = FactoryBot.create(:lot, :with_in_process_status, user: @current_user)
-        request.headers.merge! @current_user.create_new_auth_token
+        login
+        @new_lot = FactoryBot.create(:lot, :with_in_process_status, user: @user)
         get :show, params: { id: @new_lot.id }
       end
 
@@ -139,11 +133,6 @@ RSpec.describe LotsController, type: :controller do
         expect(JSON.parse(@serialization.to_json)).to eq(json_response_body)
       end
     end
-  end
-
-
-  def json_response_body
-    JSON.parse(response.body)
   end
 
 end
