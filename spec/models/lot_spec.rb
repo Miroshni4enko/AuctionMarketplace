@@ -26,6 +26,11 @@
 
 require "rails_helper"
 RSpec.describe Lot, type: :model do
+
+  it {is_expected.to callback(:create_jobs!).after(:create)}
+
+  it {is_expected.to callback(:check_start_and_end_time).before(:update)}
+
   describe "#lot_start_time" do
     it "lot_start_time cannot be in the past," do
       mock_lot = Lot.new lot_start_time: DateTime.parse("2000-12-03T04:05:06+07:00 ")
@@ -36,10 +41,30 @@ RSpec.describe Lot, type: :model do
 
   describe "#lot_end_time" do
     it "lot_end_time cannot be less than lot_start_time" do
-      mock_lot = Lot.new  lot_start_time: DateTime.parse("2018-12-03T04:05:06+07:00 "),
-                          lot_end_time: DateTime.parse("2017-12-03T04:05:06+07:00 ")
+      mock_lot = Lot.new lot_start_time: DateTime.parse("2018-12-03T04:05:06+07:00 "),
+                         lot_end_time: DateTime.parse("2017-12-03T04:05:06+07:00 ")
       mock_lot.valid? # run validators
       expect(mock_lot.errors[:lot_end_time]).to include("can't be less lot start time")
     end
+  end
+
+  describe "check_start_and_end_time callback" do
+    before do
+      user = FactoryBot.create(:user)
+      @lot = FactoryBot.create(:lot, user: user)
+    end
+
+    it "should create update job for closes status" do
+      jid_closed = @lot.lot_jid_closed
+      @lot.update_attribute(:lot_jid_closed, @lot.lot_end_time - 1.hour )
+      expect(@lot.lot_jid_closed).not_to eq(jid_closed)
+    end
+
+    it "should create update job for in process status" do
+      jid_in_process = @lot.lot_jid_in_process
+      @lot.update_attribute(:lot_start_time, @lot.lot_start_time - 1.hour)
+      expect(@lot.lot_jid_in_process).not_to eq(jid_in_process)
+    end
+
   end
 end
