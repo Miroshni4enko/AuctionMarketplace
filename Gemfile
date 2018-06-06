@@ -52,6 +52,7 @@ group :test do
   gem "rspec-sidekiq"
   gem "action-cable-testing"
   gem "shoulda-callback-matchers", "~> 1.1.1"
+  gem 'simplecov', require: false
 end
 
 gem "annotate"

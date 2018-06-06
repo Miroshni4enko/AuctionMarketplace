@@ -26,3 +26,4 @@
 
 #Ignore upload files
 /public/uploads
+coverage
