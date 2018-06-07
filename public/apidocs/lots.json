@@ -1,0 +1,651 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "http://localhost:3000",
+  "resourcePath": "lots",
+  "apis": [
+    {
+      "path": "/api/lots/my/{filter}.json",
+      "operations": [
+        {
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "uid",
+              "type": "string",
+              "description": "uid",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "access-token",
+              "type": "string",
+              "description": "access-token",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "client",
+              "type": "string",
+              "description": "client",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "filter",
+              "type": "string",
+              "description": "filter",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "created",
+                  "participation",
+                  "all"
+                ]
+              }
+            },
+            {
+              "paramType": "query",
+              "name": "page",
+              "type": "integer",
+              "description": "Pagination page number",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "per_page",
+              "type": "integer",
+              "description": "Number of items per page",
+              "required": false
+            }
+          ],
+          "summary": "Fetches current user lots filter by criteria",
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": "Lots",
+              "message": "success"
+            },
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "notes": "make sure you pass filter parameter",
+          "nickname": "Lots#my",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/api/lots.json",
+      "operations": [
+        {
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "uid",
+              "type": "string",
+              "description": "uid",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "access-token",
+              "type": "string",
+              "description": "access-token",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "client",
+              "type": "string",
+              "description": "client",
+              "required": true
+            },
+            {
+              "paramType": "query",
+              "name": "page",
+              "type": "integer",
+              "description": "Pagination page number",
+              "required": false
+            },
+            {
+              "paramType": "query",
+              "name": "per_page",
+              "type": "integer",
+              "description": "Number of items per page",
+              "required": false
+            }
+          ],
+          "summary": "Get all lots",
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": "Lots",
+              "message": "success"
+            },
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "nickname": "Lots#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/api/lots.json",
+      "operations": [
+        {
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "uid",
+              "type": "string",
+              "description": "uid",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "access-token",
+              "type": "string",
+              "description": "access-token",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "client",
+              "type": "string",
+              "description": "client",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "title",
+              "type": "string",
+              "description": "Title",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "current_price",
+              "type": "float",
+              "description": "Current price",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "estimated_price",
+              "type": "float",
+              "description": "Estimated price",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "type": "string",
+              "description": "Description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "image",
+              "type": "string",
+              "description": "Image",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "status",
+              "type": "string",
+              "description": "Status",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "pending",
+                  "in_process",
+                  "closed"
+                ]
+              }
+            }
+          ],
+          "summary": "Creates a new Lot",
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": "Lot",
+              "message": "Success"
+            },
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Lots#create",
+          "method": "post"
+        }
+      ]
+    },
+    {
+      "path": "/api/lots/{id}.json",
+      "operations": [
+        {
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "uid",
+              "type": "string",
+              "description": "uid",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "access-token",
+              "type": "string",
+              "description": "access-token",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "client",
+              "type": "string",
+              "description": "client",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "ID of Lot",
+              "required": true
+            }
+          ],
+          "summary": "Get a Lot",
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": "ShowLotWithBids",
+              "message": "Success"
+            },
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "notes": "get information of lot by passing lot id",
+          "nickname": "Lots#show",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/api/lots/{id}.json",
+      "operations": [
+        {
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "uid",
+              "type": "string",
+              "description": "uid",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "access-token",
+              "type": "string",
+              "description": "access-token",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "client",
+              "type": "string",
+              "description": "client",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": " of Lot",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "title",
+              "type": "string",
+              "description": "Title",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "current_price",
+              "type": "float",
+              "description": "Current price",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "estimated_price",
+              "type": "float",
+              "description": "Estimated price",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "description",
+              "type": "string",
+              "description": "Description",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "image",
+              "type": "string",
+              "description": "Image",
+              "required": false
+            },
+            {
+              "paramType": "form",
+              "name": "status",
+              "type": "string",
+              "description": "Status",
+              "required": true,
+              "allowableValues": {
+                "valueType": "LIST",
+                "values": [
+                  "pending",
+                  "in_process",
+                  "closed"
+                ]
+              }
+            }
+          ],
+          "summary": "Update Lot",
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "notes": "make sure you pass parameters in lot's hash:",
+          "nickname": "Lots#update",
+          "method": "patch"
+        }
+      ]
+    },
+    {
+      "path": "/api/lots/{id}.json",
+      "operations": [
+        {
+          "summary": "Delete a Lot",
+          "parameters": [
+            {
+              "paramType": "path",
+              "name": "id",
+              "type": "integer",
+              "description": "ID of Lot",
+              "required": true
+            }
+          ],
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": null,
+              "message": "Ok"
+            },
+            {
+              "code": 404,
+              "responseModel": null,
+              "message": "Not Found"
+            }
+          ],
+          "notes": "Delete Lot by passing lot id",
+          "nickname": "Lots#destroy",
+          "method": "delete"
+        }
+      ]
+    }
+  ],
+  "authorizations": null,
+  "models": {
+    "Bid": {
+      "id": "Bid",
+      "required": [
+        "id",
+        "customer_name",
+        "proposed_price",
+        "created_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "ID of Lot"
+        },
+        "customerName": {
+          "type": "string",
+          "description": "Customer name"
+        },
+        "proposedPrice": {
+          "type": "float",
+          "description": "Proposed price"
+        },
+        "createdAt": {
+          "type": "date",
+          "description": "Created at"
+        }
+      }
+    },
+    "ShowBid": {
+      "id": "ShowBid",
+      "required": [
+        "bid"
+      ],
+      "properties": {
+        "bid": {
+          "type": null,
+          "description": "Bid",
+          "$ref": "Bid"
+        }
+      }
+    },
+    "Bids": {
+      "id": "Bids",
+      "required": [
+        "bids"
+      ],
+      "properties": {
+        "bids": {
+          "type": "array",
+          "description": "Bids",
+          "items": {
+            "$ref": "ShowBid"
+          }
+        }
+      },
+      "description": "Lot objects."
+    },
+    "LotWithBids": {
+      "id": "LotWithBids",
+      "required": [
+        "id",
+        "title",
+        "current_price",
+        "estimated_price",
+        "status",
+        "bids"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Lot Id"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title"
+        },
+        "currentPrice": {
+          "type": "float",
+          "description": "Current price"
+        },
+        "estimatedPrice": {
+          "type": "float",
+          "description": "Estimated price"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description"
+        },
+        "image": {
+          "type": "string",
+          "description": "Image"
+        },
+        "status": {
+          "type": "string",
+          "description": "Status",
+          "allowableValues": {
+            "valueType": "LIST",
+            "values": [
+              "pending",
+              "in_process",
+              "closed"
+            ]
+          }
+        },
+        "bids": {
+          "type": "array",
+          "description": "Bids",
+          "items": {
+            "$ref": "ShowBid"
+          }
+        }
+      },
+      "description": "A Lot object."
+    },
+    "Lot": {
+      "id": "Lot",
+      "required": [
+        "id",
+        "title",
+        "current_price",
+        "estimated_price",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Lot Id"
+        },
+        "title": {
+          "type": "string",
+          "description": "Title"
+        },
+        "currentPrice": {
+          "type": "float",
+          "description": "Current price"
+        },
+        "estimatedPrice": {
+          "type": "float",
+          "description": "Estimated price"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description"
+        },
+        "image": {
+          "type": "string",
+          "description": "Image"
+        },
+        "status": {
+          "type": "string",
+          "description": "Status",
+          "allowableValues": {
+            "valueType": "LIST",
+            "values": [
+              "pending",
+              "in_process",
+              "closed"
+            ]
+          }
+        }
+      }
+    },
+    "ShowLotWithBids": {
+      "id": "ShowLotWithBids",
+      "required": [
+        "lot"
+      ],
+      "properties": {
+        "lot": {
+          "type": null,
+          "description": "Lot",
+          "$ref": "LotWithBids"
+        }
+      }
+    },
+    "ShowLot": {
+      "id": "ShowLot",
+      "required": [
+        "lot"
+      ],
+      "properties": {
+        "lot": {
+          "type": null,
+          "description": "Lot",
+          "$ref": "Lot"
+        }
+      }
+    },
+    "Lots": {
+      "id": "Lots",
+      "required": [
+        "lots"
+      ],
+      "properties": {
+        "lots": {
+          "type": "array",
+          "description": "Lots",
+          "items": {
+            "$ref": "ShowLot"
+          }
+        }
+      },
+      "description": "Lot objects."
+    }
+  }
+}

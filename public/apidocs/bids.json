@@ -1,0 +1,181 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "http://localhost:3000",
+  "resourcePath": "bids",
+  "apis": [
+    {
+      "path": "/api/lots/{lot_id}/bids.json",
+      "operations": [
+        {
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "uid",
+              "type": "string",
+              "description": "uid",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "access-token",
+              "type": "string",
+              "description": "access-token",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "client",
+              "type": "string",
+              "description": "client",
+              "required": true
+            },
+            {
+              "paramType": "path",
+              "name": "lot_id",
+              "type": "integer",
+              "description": "ID of Lot",
+              "required": true
+            }
+          ],
+          "summary": "Get bids related to particular lot",
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": "Bids",
+              "message": "Success"
+            },
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            }
+          ],
+          "nickname": "Bids#index",
+          "method": "get"
+        }
+      ]
+    },
+    {
+      "path": "/api/lots/{lot_id}/bids.json",
+      "operations": [
+        {
+          "parameters": [
+            {
+              "paramType": "header",
+              "name": "uid",
+              "type": "string",
+              "description": "uid",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "access-token",
+              "type": "string",
+              "description": "access-token",
+              "required": true
+            },
+            {
+              "paramType": "header",
+              "name": "client",
+              "type": "string",
+              "description": "client",
+              "required": true
+            },
+            {
+              "paramType": "form",
+              "name": "proposed_price",
+              "type": "float",
+              "description": "Proposed price",
+              "required": true
+            }
+          ],
+          "summary": "Creates a new Bid",
+          "responseMessages": [
+            {
+              "code": 200,
+              "responseModel": "ShowBid",
+              "message": "Success"
+            },
+            {
+              "code": 401,
+              "responseModel": null,
+              "message": "Unauthorized"
+            },
+            {
+              "code": 403,
+              "responseModel": null,
+              "message": "Forbidden"
+            },
+            {
+              "code": 422,
+              "responseModel": null,
+              "message": "Unprocessable Entity"
+            }
+          ],
+          "nickname": "Bids#create",
+          "method": "post"
+        }
+      ]
+    }
+  ],
+  "authorizations": null,
+  "models": {
+    "Bid": {
+      "id": "Bid",
+      "required": [
+        "id",
+        "customer_name",
+        "proposed_price",
+        "created_at"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "ID of Lot"
+        },
+        "customerName": {
+          "type": "string",
+          "description": "Customer name"
+        },
+        "proposedPrice": {
+          "type": "float",
+          "description": "Proposed price"
+        },
+        "createdAt": {
+          "type": "date",
+          "description": "Created at"
+        }
+      }
+    },
+    "ShowBid": {
+      "id": "ShowBid",
+      "required": [
+        "bid"
+      ],
+      "properties": {
+        "bid": {
+          "type": null,
+          "description": "Bid",
+          "$ref": "Bid"
+        }
+      }
+    },
+    "Bids": {
+      "id": "Bids",
+      "required": [
+        "bids"
+      ],
+      "properties": {
+        "bids": {
+          "type": "array",
+          "description": "Bids",
+          "items": {
+            "$ref": "ShowBid"
+          }
+        }
+      },
+      "description": "Lot objects."
+    }
+  }
+}
