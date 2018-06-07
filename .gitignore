@@ -27,3 +27,5 @@
 #Ignore upload files
 /public/uploads
 coverage
+## Ignore Swagger JSON files.
+##/public/apidocs/

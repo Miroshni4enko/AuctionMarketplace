@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class BidsController < ApiController
+  include Docs::BidsController
   before_action :authenticate_user!
   before_action :check_lot_in_process, only: :create
   before_action :check_lot_not_pending, only: :index
-
 
   def create
     if current_user.id != @lot.user_id

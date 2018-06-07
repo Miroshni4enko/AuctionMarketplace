@@ -123,5 +123,4 @@ class Lot < ApplicationRecord
     to_close_job = create_status_job :closed
     update_columns(lot_jid_in_process: to_in_process_job, lot_jid_closed: to_close_job)
   end
-
 end

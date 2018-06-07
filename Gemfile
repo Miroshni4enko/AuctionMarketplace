@@ -52,7 +52,7 @@ group :test do
   gem "rspec-sidekiq"
   gem "action-cable-testing"
   gem "shoulda-callback-matchers", "~> 1.1.1"
-  gem 'simplecov', require: false
+  gem "simplecov", require: false
 end
 
 gem "annotate"
@@ -76,3 +76,5 @@ gem "mini_magick"
 gem "active_model_serializers", "~> 0.10.0"
 
 gem "sidekiq"
+
+gem "swagger-docs"

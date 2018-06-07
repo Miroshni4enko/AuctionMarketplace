@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class LotsController < ApiController
+  include Docs::LotsController
   before_action :authenticate_user!
 
   def index
