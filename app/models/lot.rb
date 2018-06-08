@@ -37,7 +37,17 @@ class Lot < ApplicationRecord
             numericality: { greater_than_or_equal_to: 0 }
   validates :lot_start_time, times_in_the_future: true
 
+  # configure image uploader
+  validates :image, file_size: { less_than: 1.megabytes }
+  validates_integrity_of :image
+  validates_processing_of :image
+
   validate :lot_end_time_cannot_be_less_than_lot_start_time
+  validate :created_status, on: :create
+
+  after_create :create_jobs!
+  before_update :check_start_and_end_time
+
 
   def lot_end_time_cannot_be_less_than_lot_start_time
     if lot_end_time.present? && lot_start_time.present? && lot_end_time <= lot_start_time
@@ -45,13 +55,11 @@ class Lot < ApplicationRecord
     end
   end
 
-  # configure image uploader
-  validates :image, file_size: { less_than: 1.megabytes }
-  validates_integrity_of :image
-  validates_processing_of :image
-
-  after_create :create_jobs!
-  before_update :check_start_and_end_time
+  def created_status
+    if status != "pending"
+      errors.add(:status, "must be pending")
+    end
+  end
 
   def check_start_and_end_time
     if lot_start_time_changed?

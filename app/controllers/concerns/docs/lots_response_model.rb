@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Docs
   module LotsResponseModel
     extend ActiveSupport::Concern
@@ -6,7 +8,7 @@ module Docs
       swagger_model :LotWithBids do |api|
         description "A Lot object."
         ApiController::LotsController.add_common_property api
-        property :bids, :array, :required, "Bids", items: {'$ref' => :ShowBid}
+        property :bids, :array, :required, "Bids", items: { "$ref" => :ShowBid }
       end
 
       swagger_model :Lot do |api|
@@ -14,18 +16,18 @@ module Docs
       end
 
       swagger_model :ShowLotWithBids do
-        property :lot, nil, :required, "Lot", '$ref' => :LotWithBids
+        property :lot, nil, :required, "Lot", "$ref" => :LotWithBids
       end
       swagger_model :ShowLot do
-        property :lot, nil, :required, "Lot", '$ref' => :Lot
+        property :lot, nil, :required, "Lot", "$ref" => :Lot
       end
 
       swagger_model :Lots do
         description "Lot objects."
-        property :lots, :array, :required, "Lots", items: {'$ref' => :ShowLot}
+        property :lots, :array, :required, "Lots", items: { "$ref" => :ShowLot }
       end
 
-      def self.add_common_property api
+      def self.add_common_property(api)
         api.property :id, :integer, :required, "Lot Id"
         api.property :title, :string, :required, "Title"
         api.property :current_price, :float, :required, "Current price"

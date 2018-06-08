@@ -19,7 +19,6 @@ RSpec.describe LotsController, type: :controller do
       @new_lot.reload
     end
 
-
     it "should uploads image file" do
       expect(@new_lot.image.file).to be
     end

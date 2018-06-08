@@ -25,6 +25,8 @@ RSpec.describe Bid, type: :model do
 
   it { is_expected.to callback(:check_bid_is_winner).after(:create) }
 
+  it { is_expected.to callback(:check_bid_is_winner).after(:create) }
+
   describe "checking prices of lots" do
 
     before do

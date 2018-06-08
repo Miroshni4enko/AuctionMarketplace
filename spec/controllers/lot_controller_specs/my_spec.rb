@@ -3,18 +3,19 @@
 require "rails_helper"
 
 RSpec.describe LotsController, type: :controller do
-  describe "GET #index by criteria " do
+
+  describe "GET #my by criteria " do
     include_examples "check on auth", "get", :my, params: { filter: :all }
+
     describe "result with sign in" do
       before :all do
         @user = FactoryBot.create(:user)
         another_user = FactoryBot.create(:user)
-        10.times do
-          FactoryBot.create(:lot, user: @user)
-          another_user_lot = FactoryBot.create(:lot, user: another_user)
-          FactoryBot.create(:bid, lot: another_user_lot, user: @user)
-        end
+        FactoryBot.create_list(:lot, 10, user: @user)
+        another_user_lot = FactoryBot.create(:lot, user: another_user)
+        FactoryBot.create_list(:bid, 10, lot: another_user_lot, user: @user)
       end
+
       describe " by created criteria" do
         include_examples "lots_pagination"
         include_examples "success response"
@@ -39,6 +40,7 @@ RSpec.describe LotsController, type: :controller do
       describe " by participation criteria" do
         include_examples "lots_pagination"
         include_examples "success response"
+
         before :each do
           login @user
           get :my, params: { filter: :participation }
@@ -51,17 +53,15 @@ RSpec.describe LotsController, type: :controller do
         end
       end
 
-      describe "GET #index by all criteria" do
+      describe "GET #my by all criteria" do
         include_examples "lots_pagination"
         include_examples "success response"
+
         before do
           login
           another_user = FactoryBot.create(:user)
-          10.times do
-            FactoryBot.create(:lot, user: @user)
-            FactoryBot.create(:lot, user: another_user)
-          end
-
+          FactoryBot.create_list(:lot, 10, user: @user)
+          FactoryBot.create_list(:lot, 10, user: another_user)
 
           get :my, params: { filter: :all }
 
@@ -76,7 +76,6 @@ RSpec.describe LotsController, type: :controller do
         it "has only 10 lots" do
           expect(@response_lot_ids.size).to eq(10)
         end
-
       end
     end
   end

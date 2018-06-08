@@ -68,7 +68,7 @@ module Docs
         api.param :form, :estimated_price, :float, :required, "Estimated price"
         api.param :form, :description, :string, :optional, "Description"
         api.param :form, :image, :string, :optional, "Image"
-        api.param_list :form, :status, :string, :required, "Status", [ "pending", "in_process", "closed" ]
+        # api.param_list :form, :status, :string, :required, "Status", [ "pending", "in_process", "closed" ]
       end
 
       def self.add_pagination_params(api)

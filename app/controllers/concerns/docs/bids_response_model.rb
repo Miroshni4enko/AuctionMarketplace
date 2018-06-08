@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Docs
   module BidsResponseModel
     extend ActiveSupport::Concern
@@ -10,12 +12,12 @@ module Docs
       end
 
       swagger_model :ShowBid do
-        property :bid, nil, :required, "Bid", '$ref' => :Bid
+        property :bid, nil, :required, "Bid", "$ref" => :Bid
       end
 
       swagger_model :Bids do
         description "Lot objects."
-        property :bids, :array, :required, "Bids", items: {'$ref' => :ShowBid}
+        property :bids, :array, :required, "Bids", items: { "$ref" => :ShowBid }
       end
     end
   end

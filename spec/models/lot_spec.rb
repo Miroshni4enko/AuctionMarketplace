@@ -32,10 +32,17 @@ RSpec.describe Lot, type: :model do
   it { is_expected.to callback(:check_start_and_end_time).before(:update) }
 
   describe "#lot_start_time" do
-    it "lot_start_time cannot be in the past," do
+    it "lot_start_time cannot be in the past" do
       mock_lot = Lot.new lot_start_time: DateTime.parse("2000-12-03T04:05:06+07:00 ")
       mock_lot.valid?
       expect(mock_lot.errors[:lot_start_time]).to include("can't be in the past")
+    end
+  end
+
+  describe "status" do
+    it "must be pending after create" do
+      expect { FactoryBot.create(:lot, status: :in_process) }.to raise_error(ActiveRecord::RecordInvalid)
+      expect { FactoryBot.create(:lot, status: :closed) }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
 

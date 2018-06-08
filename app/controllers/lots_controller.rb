@@ -43,7 +43,7 @@ class LotsController < ApiController
 
   def destroy
     lot = Lot.pending_lot_by_user(lot_params[:id], current_user).first
-    if lot
+    if lot.present?
       lot.destroy
       render status: 200, format: :json
     else
@@ -55,7 +55,7 @@ class LotsController < ApiController
 
     def lot_params
       params.permit(:id, :lot, :image, :remove_image, :image_cache, :title, :description, :current_price, :created_at,
-                    :estimated_price, :lot_start_time, :lot_end_time, :status, :filter, :page)
+                    :estimated_price, :lot_start_time, :lot_end_time, :filter, :page)
     end
 
     def pagination(paginated_array, per_page = 10)

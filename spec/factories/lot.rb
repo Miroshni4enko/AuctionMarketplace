@@ -11,7 +11,10 @@ FactoryBot.define do
     lot_end_time { lot_start_time + 7.days }
 
     trait :with_in_process_status do
-      status 1
+      after(:create) do |lot|
+        lot.status = :in_process
+        lot.save
+      end
     end
 
     factory :random_lot_with_image do
