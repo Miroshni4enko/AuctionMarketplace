@@ -10,7 +10,6 @@ class BidsController < ApiController
     if current_user.id != @lot.user_id
       bid = current_user.bids.build(bid_params)
       if bid.save
-        # ActionCable.server.broadcast "bids_for_lot_#{bid["lot_id"]}_channel", bid: bid.serialize_bid.to_json
         render json: bid, status: :created, serializer: BidSerializer
       else
         render json: bid.errors, status: :unprocessable_entity
@@ -30,15 +29,15 @@ class BidsController < ApiController
 
     def check_lot_in_process
       @lot = Lot.find(bid_params[:lot_id])
-      unless @lot && @lot.in_process?
-        lot_not_found
+      unless @lot.in_process?
+        render json: { error: "Lot should be in process status" }, status: :forbidden
       end
     end
 
     def check_lot_not_pending
       @lot = Lot.find(bid_params[:lot_id])
-      unless @lot && !@lot.pending?
-        lot_not_found
+      if @lot.pending?
+        render json: { error: "Lot should be not pending" }, status: :forbidden
       end
     end
 

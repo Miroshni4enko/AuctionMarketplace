@@ -23,6 +23,9 @@ class ApiController < ApplicationController
     end
   end
 
+  rescue_from ActiveRecord::RecordNotFound do |exception|
+    render json: {error: exception}, status: :not_found
+  end
   private
     def lot_not_found
       render json: { error: "Lot did not found" }, status: :not_found

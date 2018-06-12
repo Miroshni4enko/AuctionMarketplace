@@ -42,7 +42,7 @@ RSpec.describe LotsController, type: :controller do
     end
 
     describe " update another user lots" do
-      include_examples "unprocessable entity"
+      include_examples "not found"
 
       before do
         login
@@ -50,7 +50,7 @@ RSpec.describe LotsController, type: :controller do
         @new_lot = FactoryBot.create(:lot, user: another_user)
         put :update,
             params: { id: @new_lot.id,
-                     status: :in_process }
+                     estimated_price: @new_lot.estimated_price + 1.00 }
         @new_lot.reload
       end
     end

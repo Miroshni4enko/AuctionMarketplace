@@ -34,7 +34,7 @@ class Bid < ApplicationRecord
   def update_current_price_of_lot
     lot.current_price = proposed_price
     lot.winning_bid = id
-    save
+    lot.save
   end
 
   def check_proposed_price

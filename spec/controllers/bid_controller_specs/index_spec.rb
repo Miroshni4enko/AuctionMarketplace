@@ -33,6 +33,12 @@ RSpec.describe BidsController, type: :controller do
         expect(serializer.customer_name).to eq(json_response_body["bids"][0]["customer_name"])
         expect("You").to eq(json_response_body["bids"][0]["customer_name"])
       end
+      describe "lot not found " do
+        include_examples "not found"
+        before do
+          get :index, params: { lot_id: 17 }
+        end
+      end
     end
   end
 end

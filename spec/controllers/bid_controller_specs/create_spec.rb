@@ -11,7 +11,8 @@ RSpec.describe BidsController, type: :controller do
   end
 
   describe "post #create" do
-    include_examples "check on auth", "post", :create, params: { lot_id: 1, proposed_price: 1 }
+    fake_params = {lot_id: 1, proposed_price: 1}
+    include_examples "check on auth", "post", :create, params: fake_params
 
     before do
       @bid_params = FactoryBot.attributes_for(:bid, lot: @lot, user: @another_user)
@@ -34,7 +35,7 @@ RSpec.describe BidsController, type: :controller do
       describe "create bids from the same user that created lot user" do
 
         before do
-          login  @user
+          login @user
           post :create, params: @bid_params.merge(lot_id: @lot.id)
         end
 
@@ -47,13 +48,22 @@ RSpec.describe BidsController, type: :controller do
 
         before do
           login @another_user
-          post :create, params: { proposed_price: :not_exist, lot_id: @lot.id }
+          post :create, params: {proposed_price: :not_exist, lot_id: @lot.id}
         end
 
         it "should response forbidden status " do
           expect(response).to have_http_status(:unprocessable_entity)
         end
       end
+
+      describe "lot not found " do
+        include_examples "not found"
+        before do
+          login @another_user
+          post :create, params: @bid_params.merge(lot_id: 17)
+        end
+      end
     end
   end
 end
+
