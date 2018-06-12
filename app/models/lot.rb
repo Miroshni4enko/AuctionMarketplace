@@ -76,7 +76,7 @@ class Lot < ApplicationRecord
       if filter == "created"
         user.lots
       elsif filter == "participation"
-        joins(:bids).where(bids: { user_id: user.id })
+        joins(:bids).where(bids: { user_id: user.id }).distinct
       elsif filter == "all"
         left_joins(:bids)
             .where("lots.user_id": user.id)

@@ -12,8 +12,7 @@ FactoryBot.define do
 
     trait :with_in_process_status do
       after(:create) do |lot|
-        lot.status = :in_process
-        lot.save
+        lot.update_attribute(:status, :in_process)
       end
     end
 

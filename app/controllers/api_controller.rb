@@ -26,8 +26,14 @@ class ApiController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound do |exception|
     render json: {error: exception}, status: :not_found
   end
+
   private
-    def lot_not_found
-      render json: { error: "Lot did not found" }, status: :not_found
+
+  def set_pending_lot
+    @lot = current_user.lots.find(lot_params[:id])
+    if @lot.status != "pending"
+      render json: {error: "Status must be pending"}, status: :unprocessable_entity
     end
+  end
+
 end

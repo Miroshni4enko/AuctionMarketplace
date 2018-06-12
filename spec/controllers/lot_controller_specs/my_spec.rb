@@ -11,9 +11,9 @@ RSpec.describe LotsController, type: :controller do
       before :all do
         @user = FactoryBot.create(:user)
         another_user = FactoryBot.create(:user)
-        FactoryBot.create_list(:lot, 10, user: @user)
-        another_user_lot = FactoryBot.create(:lot, user: another_user)
-        FactoryBot.create_list(:bid, 10, lot: another_user_lot, user: @user)
+        FactoryBot.create_list(:lot, 10, :with_in_process_status, user: @user)
+        @another_user_lot = FactoryBot.create(:lot, :with_in_process_status, user: another_user)
+        FactoryBot.create_list(:bid, 10, lot: @another_user_lot, user: @user)
       end
 
       describe " by created criteria" do
@@ -49,7 +49,7 @@ RSpec.describe LotsController, type: :controller do
         it "get only current users lots that user won/try to win" do
           @user.reload
           response_lot_ids = json_response_body["lots"].map { |lot_hash| lot_hash["id"] }
-          expect(Lot.joins(:bids).where(bids: { user_id: @user.id }).map(&:id)).to match_array(response_lot_ids)
+          expect([@another_user_lot.id]).to match_array(response_lot_ids)
         end
       end
 
@@ -60,8 +60,8 @@ RSpec.describe LotsController, type: :controller do
         before do
           login
           another_user = FactoryBot.create(:user)
-          FactoryBot.create_list(:lot, 10, user: @user)
-          FactoryBot.create_list(:lot, 10, user: another_user)
+          FactoryBot.create_list(:lot, 10, :with_in_process_status, user: @user)
+          FactoryBot.create_list(:lot, 10, :with_in_process_status, user: another_user)
 
           get :my, params: { filter: :all }
 

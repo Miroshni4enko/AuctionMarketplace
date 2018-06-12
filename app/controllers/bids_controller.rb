@@ -3,11 +3,11 @@
 class BidsController < ApiController
   include Docs::BidsController
   before_action :authenticate_user!
-  before_action :check_lot_in_process, only: :create
   before_action :check_lot_not_pending, only: :index
 
   def create
-    if current_user.id != @lot.user_id
+    lot = Lot.find(bid_params[:lot_id])
+    if current_user.id != lot.user_id
       bid = current_user.bids.build(bid_params)
       if bid.save
         render json: bid, status: :created, serializer: BidSerializer
@@ -26,13 +26,6 @@ class BidsController < ApiController
   end
 
   private
-
-    def check_lot_in_process
-      @lot = Lot.find(bid_params[:lot_id])
-      unless @lot.in_process?
-        render json: { error: "Lot should be in process status" }, status: :forbidden
-      end
-    end
 
     def check_lot_not_pending
       @lot = Lot.find(bid_params[:lot_id])

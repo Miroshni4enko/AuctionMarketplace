@@ -36,7 +36,7 @@ RSpec.describe LotsController, type: :controller do
         include_examples "not found"
 
         before  do
-          get :show, params: { id: 17 }
+          get :show, params: { id: -17 }
         end
       end
     end

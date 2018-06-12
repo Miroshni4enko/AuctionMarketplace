@@ -39,10 +39,14 @@ RSpec.describe Lot, type: :model do
     end
   end
 
-  describe "status" do
+  describe "validation  created_status" do
     it "must be pending after create" do
-      expect { FactoryBot.create(:lot, status: :in_process) }.to raise_error(ActiveRecord::RecordInvalid)
-      expect { FactoryBot.create(:lot, status: :closed) }.to raise_error(ActiveRecord::RecordInvalid)
+      in_process_lot =  FactoryBot.build(:lot, status: :in_process)
+      closed_lot = FactoryBot.build(:lot, status: :closed)
+      in_process_lot.valid?
+      closed_lot.valid?
+      expect(in_process_lot.errors[:status]).to include ("must be pending")
+      expect(closed_lot.errors[:status]).to include ("must be pending")
     end
   end
 

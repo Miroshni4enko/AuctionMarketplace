@@ -10,7 +10,7 @@ RSpec.describe BidBroadcastWorker, type: :worker do
 
   before do
     current_user = FactoryBot.create(:user)
-    @lot = FactoryBot.create(:lot, user: current_user)
+    @lot = FactoryBot.create(:lot, :with_in_process_status, user: current_user)
     @another_user = FactoryBot.create(:user)
     @bid = FactoryBot.create(:bid, lot: @lot, user: @another_user)
   end

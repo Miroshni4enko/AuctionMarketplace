@@ -25,7 +25,18 @@ RSpec.describe Bid, type: :model do
 
   it { is_expected.to callback(:check_bid_is_winner).after(:create) }
 
-  it { is_expected.to callback(:check_bid_is_winner).after(:create) }
+
+  describe "validation lot status " do
+    it "must be in process after create" do
+      @user = FactoryBot.create(:user)
+      @another_user = FactoryBot.create(:user)
+      pending_lot = FactoryBot.create(:lot, status: :pending, user: @user)
+      bid =  FactoryBot.build(:bid, lot:pending_lot, user:@another_user)
+      bid.valid?
+      expect(bid.errors["lot.status"]).to include("lot status must be in process")
+    end
+  end
+
 
   describe "checking prices of lots" do
 
