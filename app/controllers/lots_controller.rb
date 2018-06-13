@@ -63,7 +63,7 @@ class LotsController < ApiController
                   :estimated_price, :lot_start_time, :lot_end_time, :filter, :page)
   end
 
-  def pagination(paginated_array, per_page = 10)
+  def pagination(paginated_array, per_page = Kaminari.config.default_per_page)
     {pagination: {per_page: per_page.to_i,
                   total_pages: paginated_array.total_pages,
                   total_lots: paginated_array.total_count}}
