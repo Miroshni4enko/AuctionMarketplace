@@ -25,6 +25,8 @@
 #
 
 class Lot < ApplicationRecord
+  include Filterable
+
   mount_uploader :image, LotImageUploader
   belongs_to :user
   has_one :order, through: :bid
@@ -43,10 +45,10 @@ class Lot < ApplicationRecord
   validates_processing_of :image
 
   validate :lot_end_time_cannot_be_less_than_lot_start_time
-  validate :created_status, on: :create
+  validate :created_status_validation, on: :create
 
   after_create :create_jobs!
-  before_update :check_start_and_end_time
+  before_update :update_jobs_by_start_and_end_time
 
 
   def lot_end_time_cannot_be_less_than_lot_start_time
@@ -55,19 +57,19 @@ class Lot < ApplicationRecord
     end
   end
 
-  def created_status
+  def created_status_validation
     if status != "pending"
       errors.add(:status, "must be pending")
     end
   end
 
-  def check_start_and_end_time
+  def update_jobs_by_start_and_end_time
     if lot_start_time_changed?
-      create_status_job! :in_process
+      create_updated_status_job! :in_process
     end
 
     if lot_end_time_changed?
-      create_status_job! :closed
+      create_updated_status_job! :closed
     end
   end
 
@@ -85,13 +87,12 @@ class Lot < ApplicationRecord
     end
   end
 
-  scope :get_to_show, -> (lot_id, user) {
-    where(id: lot_id)
-        .where(user_id: user.id)
-        .or(Lot.where(status: :in_process))
-        .left_joins(:bids)
-        .or(Lot.left_joins(:bids).where("bids.user_id": user.id))
-  }
+  scope :created_by_user_id, -> (user_id) { where user_id: user_id }
+  scope :participation_by_user_id, -> (user_id) { joins(:bids).where(bids: { user_id: user_id }).distinct }
+  scope :all_by_user_id, -> (user_id) { where(lots: { user_id: user_id })
+                                            .or(where(bids: { user_id: user_id }))
+                                            .left_joins(:bids)}
+
 
   scope :pending_lot_by_user, -> (lot_id, user) {
     where(id: lot_id)
@@ -108,8 +109,8 @@ class Lot < ApplicationRecord
   end
 
 
-  def create_status_job! (status)
-    job = create_status_job status
+  def create_updated_status_job! (status)
+    job = create_updated_status_job status
     if status == :in_process
       update_column(:lot_jid_in_process, job)
     elsif status == :closed
@@ -118,7 +119,7 @@ class Lot < ApplicationRecord
   end
 
 
-  def create_status_job (status)
+  def create_updated_status_job (status)
     if status == :in_process
       LotStatusUpdateWorker.perform_at(lot_start_time, id, status)
     elsif status == :closed
@@ -127,8 +128,8 @@ class Lot < ApplicationRecord
   end
 
   def create_jobs!
-    to_in_process_job = create_status_job :in_process
-    to_close_job = create_status_job :closed
+    to_in_process_job = create_updated_status_job :in_process
+    to_close_job = create_updated_status_job :closed
     update_columns(lot_jid_in_process: to_in_process_job, lot_jid_closed: to_close_job)
   end
 end

@@ -11,7 +11,7 @@ RSpec.describe BidsController, type: :controller do
   end
 
   describe "post #create" do
-    fake_params = {lot_id: 1, proposed_price: 1}
+    fake_params = { lot_id: 1, proposed_price: 1 }
     include_examples "check on auth", "post", :create, params: fake_params
 
     before do
@@ -48,7 +48,7 @@ RSpec.describe BidsController, type: :controller do
 
         before do
           login @another_user
-          post :create, params: {proposed_price: :not_exist, lot_id: @lot.id}
+          post :create, params: { proposed_price: :not_exist, lot_id: @lot.id }
         end
 
         it "should response forbidden status " do
@@ -66,4 +66,3 @@ RSpec.describe BidsController, type: :controller do
     end
   end
 end
-

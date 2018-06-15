@@ -2,10 +2,10 @@
 
 require "rails_helper"
 
-RSpec.describe LotsController, type: :controller do
+RSpec.describe MyController, type: :controller do
 
   describe "GET #my by criteria " do
-    include_examples "check on auth", "get", :my, params: { filter: :all }
+    include_examples "check on auth", "get", :index, params: { filter: :all }
 
     describe "result with sign in" do
       before :all do
@@ -22,7 +22,7 @@ RSpec.describe LotsController, type: :controller do
 
         before :each do
           login @user
-          get :my, params: { filter: :created }
+          get :index, params: { filter: :created }
         end
 
         it "get only current users lots that user create for sale" do
@@ -43,7 +43,7 @@ RSpec.describe LotsController, type: :controller do
 
         before :each do
           login @user
-          get :my, params: { filter: :participation }
+          get :index, params: { filter: :participation }
         end
 
         it "get only current users lots that user won/try to win" do
@@ -63,7 +63,7 @@ RSpec.describe LotsController, type: :controller do
           FactoryBot.create_list(:lot, 10, :with_in_process_status, user: @user)
           FactoryBot.create_list(:lot, 10, :with_in_process_status, user: another_user)
 
-          get :my, params: { filter: :all }
+          get :index, params: { filter: :all }
 
           @response_lot_ids = json_response_body["lots"].map { |lot_hash| lot_hash["id"] }
         end

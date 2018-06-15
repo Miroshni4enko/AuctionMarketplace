@@ -29,7 +29,7 @@ RSpec.describe Lot, type: :model do
 
   it { is_expected.to callback(:create_jobs!).after(:create) }
 
-  it { is_expected.to callback(:check_start_and_end_time).before(:update) }
+  it { is_expected.to callback(:update_jobs_by_start_and_end_time).before(:update) }
 
   describe "#lot_start_time" do
     it "lot_start_time cannot be in the past" do

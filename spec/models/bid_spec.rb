@@ -31,7 +31,7 @@ RSpec.describe Bid, type: :model do
       @user = FactoryBot.create(:user)
       @another_user = FactoryBot.create(:user)
       pending_lot = FactoryBot.create(:lot, status: :pending, user: @user)
-      bid =  FactoryBot.build(:bid, lot:pending_lot, user:@another_user)
+      bid = FactoryBot.build(:bid, lot: pending_lot, user: @another_user)
       bid.valid?
       expect(bid.errors["lot.status"]).to include("lot status must be in process")
     end

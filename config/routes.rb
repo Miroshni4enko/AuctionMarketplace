@@ -13,8 +13,8 @@ Rails.application.routes.draw do
         confirmations: "users/confirmations"
     }
 
+    get "my/:filter", to: "my#index"
 
-    get "/lots/my/:filter", to: "lots#my"
     resources :lots do
       resources :bids, except: [:show, :update, :destroy]
     end

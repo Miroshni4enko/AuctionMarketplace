@@ -22,8 +22,8 @@ class Bid < ApplicationRecord
   has_one :order, dependent: :destroy
   validates :proposed_price, presence: true
   validates :proposed_price, numericality: { greater_than_or_equal_to: 0 }
-  validate :check_proposed_price
-  validate :lot_status, on: :create
+  validate :proposed_price_validation
+  validate :lot_status_validation, on: :create
   after_create :check_bid_is_winner
   after_create :update_current_price_of_lot
   after_create :perform_broadcast
@@ -38,7 +38,7 @@ class Bid < ApplicationRecord
     lot.save
   end
 
-  def check_proposed_price
+  def proposed_price_validation
     if proposed_price <= lot.current_price
       errors.add(:proposed_price, "can't be less than current lot price")
     end
@@ -53,10 +53,9 @@ class Bid < ApplicationRecord
     BidBroadcastWorker.perform_async(serialize_bid)
   end
 
-  def lot_status
+  def lot_status_validation
     unless lot.in_process?
       errors.add("lot.status", "lot status must be in process")
     end
   end
-
 end
