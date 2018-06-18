@@ -4,7 +4,7 @@ class MyController < ApiController
   before_action :check_criteria
 
   def index
-    my_lots = Lot.filter_by_criteria_and_user_id(@criteria, current_user.id)
+    my_lots = Lot.filter_by_criteria_and_user_id(@criteria, current_user.id).page(my_params[:page])
     render_collection my_lots, each_serializer: LotSerializer
   end
 

@@ -21,8 +21,8 @@ class BidsController < ApiController
 
 
   def index
-    bids = @lot.bids
-    render json: bids, each_serializer: BidSerializer, current_user_id: current_user.id
+    bids = @lot.bids.page(bid_params[:page])
+    render_collection bids, each_serializer: BidSerializer, current_user_id: current_user.id
   end
 
   private
@@ -35,6 +35,6 @@ class BidsController < ApiController
     end
 
     def bid_params
-      params.permit(:id, :lot_id, :proposed_price)
+      params.permit(:lot_id, :proposed_price, :page)
     end
 end

@@ -54,7 +54,6 @@ class ApiController < ApplicationController
     end
 
     def render_collection(collection, options = {})
-      page_of_collection = collection.page(params[:page])
-      render ({ json: page_of_collection, meta: pagination(page_of_collection) }).merge! options
+      render ({ json: collection, meta: pagination(collection) }).merge! options
     end
 end
