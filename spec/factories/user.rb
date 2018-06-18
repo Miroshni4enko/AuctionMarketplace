@@ -8,7 +8,7 @@ FactoryBot.define do
     email { Faker::Internet.email }
     phone { Faker::PhoneNumber.cell_phone }
     birthday { Faker::Date.birthday min_age = 21 }
-    confirmed_at DateTime.now
+    confirmed_at DateTime.current
 
     trait :unconfirmed do
       confirmed_at nil

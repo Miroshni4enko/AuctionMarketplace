@@ -7,7 +7,7 @@ FactoryBot.define do
     description { Faker::Lorem.sentence(20, false, 0).chop }
     current_price { Faker::Commerce.price }
     estimated_price { current_price + Faker::Commerce.price }
-    lot_start_time { DateTime.now + 8.days }
+    lot_start_time { DateTime.current + 8.days }
     lot_end_time { lot_start_time + 7.days }
 
     trait :with_in_process_status do
