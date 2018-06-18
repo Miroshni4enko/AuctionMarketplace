@@ -104,7 +104,7 @@ class Lot < ApplicationRecord
     if (bid.proposed_price >= self.estimated_price)
       self.lot_jid_closed = nil
       self.status = :closed
-      save
+      save!
     end
   end
 

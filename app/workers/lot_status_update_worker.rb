@@ -8,9 +8,9 @@ class LotStatusUpdateWorker
     lot = Lot.find lot_id
     if lot
       if status == :in_process && lot.lot_jid_in_process == jid
-        lot.update(status: :in_process)
+        lot.update!(status: :in_process)
       elsif status == :closed && lot.lot_jid_closed == jid
-        lot.update(status: :update)
+        lot.update!(status: :update)
       end
     end
   end
