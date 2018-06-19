@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe BidsController, type: :controller do
-
+  include ActiveJob::TestHelper
   before do
     @user = FactoryBot.create(:user)
     @lot = FactoryBot.create(:lot, :with_in_process_status, user: @user)
@@ -24,11 +24,27 @@ RSpec.describe BidsController, type: :controller do
 
         before do
           login @another_user
-          post :create, params: @bid_params.merge(lot_id: @lot.id)
+        end
+
+        subject(:create_bid) do
+          perform_enqueued_jobs do
+            post :create, params: @bid_params.merge(lot_id: @lot.id)
+          end
+          response
         end
 
         it "should add bid" do
-          expect(@lot.bids.count).to eq(1)
+          expect { create_bid } .to change { @lot.bids.count }.by(1)
+        end
+
+        it "should set the last bid as winning bid" do
+          bid_id = JSON.parse(create_bid.body).with_indifferent_access[:bid][:id]
+          @lot.reload
+          expect(@lot.winning_bid).to eq(bid_id)
+        end
+
+        it "should not send  email" do
+          expect { create_bid }.to_not change { ActionMailer::Base.deliveries.size }
         end
       end
 

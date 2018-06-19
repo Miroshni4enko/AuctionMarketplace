@@ -50,6 +50,15 @@ class Lot < ApplicationRecord
   after_create :create_jobs!
   before_update :update_jobs_by_start_and_end_time
 
+  after_save :send_email_to_winner, if: :status_changed_to_close?
+
+  def status_changed_to_close?
+    saved_change_to_status? && status == "closed"
+  end
+
+  def send_email_to_winner
+    WinnerMailer.winning_email(Bid.find(winning_bid).user, self).deliver_now!
+  end
 
   def lot_end_time_cannot_be_less_than_lot_start_time
     if lot_end_time.present? && lot_start_time.present? && lot_end_time <= lot_start_time
@@ -93,21 +102,17 @@ class Lot < ApplicationRecord
                                             .or(where(bids: { user_id: user_id }))
                                             .left_joins(:bids)}
 
-
   scope :pending_lot_by_user, -> (lot_id, user) {
     where(id: lot_id)
         .where(user_id: user.id)
         .where(status: :pending)
   }
 
-  def check_estimated_prices(bid)
-    if (bid.proposed_price >= self.estimated_price)
-      self.lot_jid_closed = nil
-      self.status = :closed
-      save!
-    end
+  def close_lot
+    self.lot_jid_closed = nil
+    self.status = :closed
+    save!
   end
-
 
   def create_updated_status_job! (status)
     job = create_updated_status_job status
@@ -117,7 +122,6 @@ class Lot < ApplicationRecord
       update_column(:lot_jid_closed, job)
     end
   end
-
 
   def create_updated_status_job (status)
     if status == :in_process

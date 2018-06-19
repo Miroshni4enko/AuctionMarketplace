@@ -29,6 +29,8 @@ RSpec.describe Lot, type: :model do
 
   it { is_expected.to callback(:create_jobs!).after(:create) }
 
+  it { is_expected.to callback(:send_email_to_winner).after(:save) }
+
   it { is_expected.to callback(:update_jobs_by_start_and_end_time).before(:update) }
 
   describe "#lot_start_time" do

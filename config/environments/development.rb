@@ -32,10 +32,30 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options)
   config.active_storage.service = :local
 
-  # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.active_job.queue_adapter = :sidekiq
+  config.active_job.queue_name_prefix = "winner"
+  config.active_job.queue_name_delimiter = "_"
 
-  config.action_mailer.perform_caching = false
+
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = true
+
+  config.action_mailer.delivery_method = :smtp
+  # SMTP settings for gmail
+  config.action_mailer.smtp_settings = {
+      address: "smtp.gmail.com",
+      port: 587,
+      domain:               "example.com",
+      user_name: ENV["gmail_username"],
+      password: ENV["gmail_password"],
+      authentication: "plain",
+      enable_starttls_auto: true
+  }
+
+  # Don't care if the mailer can't send.
+  # config.action_mailer.raise_delivery_errors = false
+
+  # config.action_mailer.perform_caching = false
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log

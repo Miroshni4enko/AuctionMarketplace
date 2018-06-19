@@ -24,18 +24,20 @@ class Bid < ApplicationRecord
   validates :proposed_price, numericality: { greater_than_or_equal_to: 0 }
   validate :proposed_price_validation
   validate :lot_status_validation, on: :create
-  after_create :check_bid_is_winner
   after_create :update_current_price_of_lot
+  after_create :check_bid_is_winner
   after_create :perform_broadcast
 
   def check_bid_is_winner
-    self.lot.check_estimated_prices self
+    if proposed_price >= lot.estimated_price
+      lot.close_lot
+    end
   end
 
   def update_current_price_of_lot
     lot.current_price = proposed_price
     lot.winning_bid = id
-    lot.save
+    lot.save!
   end
 
   def proposed_price_validation

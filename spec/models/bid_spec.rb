@@ -53,7 +53,9 @@ RSpec.describe Bid, type: :model do
     end
 
     it "check_bid_is_winner" do
-      bid = @lot.bids.new(proposed_price: @lot.estimated_price + 2.00)
+      another_user = FactoryBot.create(:user)
+      proposed_price = @lot.estimated_price + 2.00
+      bid = FactoryBot.create(:bid, proposed_price: proposed_price, lot: @lot, user: another_user)
       bid.check_bid_is_winner
       expect(@lot.status).to eq("closed")
       expect(@lot.lot_jid_closed).to eq(nil)

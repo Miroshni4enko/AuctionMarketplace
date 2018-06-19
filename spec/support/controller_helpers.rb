@@ -13,5 +13,5 @@ def login_user_for_each_test
 end
 
 def json_response_body
-  JSON.parse(response.body)
+  JSON.parse(response.body).with_indifferent_access
 end

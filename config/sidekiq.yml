@@ -4,6 +4,7 @@
 :queues:
   - high
   - default
+  - winner_mailers
 staging:
   :concurrency: 10
 production:

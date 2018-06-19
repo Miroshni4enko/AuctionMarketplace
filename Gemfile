@@ -56,7 +56,7 @@ group :test do
 end
 
 gem "annotate"
-gem 'brakeman', :require => false
+gem "brakeman", require: false
 gem "rspec-rails", groups: %i[development test]
 gem "dotenv-rails", groups: %i[development test]
 gem "rubocop", "~> 0.55.0", require: false
