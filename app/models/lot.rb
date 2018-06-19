@@ -82,22 +82,10 @@ class Lot < ApplicationRecord
     end
   end
 
-  def self.matching_filter_by_user(filter, user)
-    if filter
-      if filter == "created"
-        user.lots
-      elsif filter == "participation"
-        joins(:bids).where(bids: { user_id: user.id }).distinct
-      elsif filter == "all"
-        left_joins(:bids)
-            .where("lots.user_id": user.id)
-            .or(left_joins(:bids).where("bids.user_id": user.id))
-      end
-    end
-  end
-
   scope :created_by_user_id, -> (user_id) { where user_id: user_id }
+
   scope :participation_by_user_id, -> (user_id) { joins(:bids).where(bids: { user_id: user_id }).distinct }
+
   scope :all_by_user_id, -> (user_id) { where(lots: { user_id: user_id })
                                             .or(where(bids: { user_id: user_id }))
                                             .left_joins(:bids)}
