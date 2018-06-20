@@ -43,7 +43,7 @@ RSpec.describe BidsController, type: :controller do
           expect(@lot.winning_bid).to eq(bid_id)
         end
 
-        it "should not send  email" do
+        it "should not send emails" do
           expect { create_bid }.to_not change { ActionMailer::Base.deliveries.size }
         end
       end

@@ -20,7 +20,7 @@ RSpec.describe LotsController, type: :controller do
         end
 
         it "should add lot" do
-          expect(@user.lots.count).to eq(1)
+          expect(@logged_user.lots.count).to eq(1)
         end
 
         it "should add two jobs" do

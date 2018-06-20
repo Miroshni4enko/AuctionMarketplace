@@ -21,7 +21,7 @@ RSpec.describe LotsController, type: :controller do
         include_examples "success response"
 
         before do
-          @new_lot = FactoryBot.create(:lot, :with_in_process_status, user: @user)
+          @new_lot = FactoryBot.create(:lot, :with_in_process_status, user: @logged_user)
           get :show, params: { id: @new_lot.id }
         end
 

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 def login(user = FactoryBot.create(:user))
-  @user = user
-  request.headers.merge! @user.create_new_auth_token
+  @logged_user = user
+  request.headers.merge! @logged_user.create_new_auth_token
   end
 
 

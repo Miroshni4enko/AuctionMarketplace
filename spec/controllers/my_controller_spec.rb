@@ -60,7 +60,7 @@ RSpec.describe MyController, type: :controller do
         before do
           login
           another_user = FactoryBot.create(:user)
-          FactoryBot.create_list(:lot, 10, :with_in_process_status, user: @user)
+          FactoryBot.create_list(:lot, 10, :with_in_process_status, user: @logged_user)
           FactoryBot.create_list(:lot, 10, :with_in_process_status, user: another_user)
 
           get :index, params: { filter: :all }
@@ -69,8 +69,8 @@ RSpec.describe MyController, type: :controller do
         end
 
         it "gets only current user lots" do
-          @user.reload
-          expect(@user.lots.map(&:id)).to match_array(@response_lot_ids)
+          @logged_user.reload
+          expect(@logged_user.lots.map(&:id)).to match_array(@response_lot_ids)
         end
 
         it "has only 10 lots" do

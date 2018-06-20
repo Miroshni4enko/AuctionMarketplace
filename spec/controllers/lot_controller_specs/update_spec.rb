@@ -13,7 +13,7 @@ RSpec.describe LotsController, type: :controller do
 
         before do
           login
-          @new_lot = FactoryBot.create(:lot, user: @user)
+          @new_lot = FactoryBot.create(:lot, user: @logged_user)
           @new_price = @new_lot.estimated_price + 2.00
           put :update,
               params: { id: @new_lot.id,
@@ -31,7 +31,7 @@ RSpec.describe LotsController, type: :controller do
 
         before do
           login
-          @new_lot = FactoryBot.create(:lot, :with_in_process_status, user: @user)
+          @new_lot = FactoryBot.create(:lot, :with_in_process_status, user: @logged_user)
 
           put :update,
               params: { id: @new_lot.id,

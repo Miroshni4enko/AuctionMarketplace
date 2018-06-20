@@ -50,14 +50,15 @@ class Lot < ApplicationRecord
   after_create :create_jobs!
   before_update :update_jobs_by_start_and_end_time
 
-  after_save :send_email_to_winner, if: :status_changed_to_close?
+  after_save :send_emails, if: :status_changed_to_close?
 
   def status_changed_to_close?
     saved_change_to_status? && status == "closed"
   end
 
-  def send_email_to_winner
-    WinnerMailer.winning_email(Bid.find(winning_bid).user, self).deliver_now!
+  def send_emails
+    WinnerMailer.winning_email(Bid.find(winning_bid).user, self).deliver_later
+    NotifySellerMailer.lot_closed_email(user, self).deliver_later
   end
 
   def lot_end_time_cannot_be_less_than_lot_start_time
