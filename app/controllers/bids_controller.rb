@@ -9,11 +9,8 @@ class BidsController < ApiController
     lot = Lot.find(bid_params[:lot_id])
     if current_user.id != lot.user_id
       bid = current_user.bids.build(bid_params)
-      if bid.save
-        render json: bid, status: :created, serializer: BidSerializer
-      else
-        render json: bid.errors, status: :unprocessable_entity
-      end
+      bid.save
+      render_record_or_errors bid, serializer: BidSerializer
     else
       render json: { error: "Current user can't create bid" }, status: :forbidden
     end

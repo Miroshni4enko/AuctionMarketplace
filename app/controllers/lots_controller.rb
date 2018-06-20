@@ -14,7 +14,7 @@ class LotsController < ApiController
     lot = Lot.find(lot_params[:id])
     users_id = lot.bids.map(&:id)
     if lot.user_id == current_user.id || users_id.include?(current_user.id)
-      render_record_or_errors lot
+      render_record_or_errors lot , serializer: LotWithAssociationSerializer
     else
       render status: :forbidden
     end
@@ -23,12 +23,12 @@ class LotsController < ApiController
   def create
     lot = current_user.lots.build(lot_params)
     lot.save
-    render_record_or_errors lot
+    render_record_or_errors lot, serializer: LotWithAssociationSerializer
   end
 
   def update
     @lot.update(lot_params)
-    render_record_or_errors @lot
+    render_record_or_errors @lot, serializer: LotWithAssociationSerializer
   end
 
   def destroy
@@ -42,14 +42,6 @@ class LotsController < ApiController
       @lot = current_user.lots.find(lot_params[:id])
       if @lot.status != "pending"
         render json: { error: "Status must be pending" }, status: :unprocessable_entity
-      end
-    end
-
-    def render_record_or_errors(item)
-      if item.errors.present?
-        render json: { errors: item.errors }, status: :unprocessable_entity
-      else
-        render json: item, status: 200, serializer: LotWithAssociationSerializer
       end
     end
 
