@@ -5,9 +5,9 @@ require "rails_helper"
 RSpec.describe BidsController, type: :controller do
   include ActiveJob::TestHelper
   before do
-    @user = FactoryBot.create(:user)
-    @lot = FactoryBot.create(:lot, :with_in_process_status, user: @user)
-    @another_user = FactoryBot.create(:user)
+    @user = create(:user)
+    @lot = create(:lot, :with_in_process_status, user: @user)
+    @another_user = create(:user)
   end
 
   describe "post #create" do
@@ -15,7 +15,7 @@ RSpec.describe BidsController, type: :controller do
     include_examples "check on auth", "post", :create, params: fake_params
 
     before do
-      @bid_params = FactoryBot.attributes_for(:bid, lot: @lot, user: @another_user)
+      @bid_params = attributes_for(:bid, lot: @lot, user: @another_user)
     end
 
     describe "result after sign in" do
@@ -38,7 +38,7 @@ RSpec.describe BidsController, type: :controller do
         end
 
         it "should set the last bid as winning bid" do
-          bid_id = JSON.parse(create_bid.body).with_indifferent_access[:bid][:id]
+          bid_id = json_response_body(create_bid)[:bid][:id]
           @lot.reload
           expect(@lot.winning_bid).to eq(bid_id)
         end

@@ -21,19 +21,19 @@ RSpec.describe Bid, type: :model do
 
   it { is_expected.to callback(:perform_broadcast).after(:create) }
 
-  it { is_expected.to callback(:update_current_price_of_lot).after(:create) }
+  it { is_expected.to callback(:update_lot_by_created_bid).after(:create) }
 
   it { is_expected.to callback(:check_bid_is_winner).after(:create) }
 
 
   describe "validation lot status " do
     it "must be in process after create" do
-      @user = FactoryBot.create(:user)
-      @another_user = FactoryBot.create(:user)
-      pending_lot = FactoryBot.create(:lot, status: :pending, user: @user)
-      bid = FactoryBot.build(:bid, lot: pending_lot, user: @another_user)
+      @user = create(:user)
+      @another_user = create(:user)
+      pending_lot = create(:lot, status: :pending, user: @user)
+      bid = build(:bid, lot: pending_lot, user: @another_user)
       bid.valid?
-      expect(bid.errors["lot.status"]).to include("lot status must be in process")
+      expect(bid.errors["lot.status"]).to include("must be in process")
     end
   end
 
@@ -41,21 +41,21 @@ RSpec.describe Bid, type: :model do
   describe "checking prices of lots" do
 
     before do
-      @user = FactoryBot.create(:user)
-      @lot = FactoryBot.create(:lot, :with_in_process_status, user: @user)
+      @user = create(:user)
+      @lot = create(:lot, :with_in_process_status, user: @user)
     end
 
     it "should update current price of lot" do
-      bid = FactoryBot.build(:bid, lot: @lot, user: @user)
-      bid.update_current_price_of_lot
+      bid = build(:bid, lot: @lot, user: @user)
+      bid.update_lot_by_created_bid
       expect(@lot.current_price).to eq(bid.proposed_price)
       expect(@lot.winning_bid).to eq(bid.id)
     end
 
     it "check_bid_is_winner" do
-      another_user = FactoryBot.create(:user)
+      another_user = create(:user)
       proposed_price = @lot.estimated_price + 2.00
-      bid = FactoryBot.create(:bid, proposed_price: proposed_price, lot: @lot, user: another_user)
+      bid = create(:bid, proposed_price: proposed_price, lot: @lot, user: another_user)
       bid.check_bid_is_winner
       expect(@lot.status).to eq("closed")
       expect(@lot.lot_jid_closed).to eq(nil)

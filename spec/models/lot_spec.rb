@@ -15,6 +15,7 @@
 #  lot_start_time     :datetime         not null
 #  status             :integer          default("pending"), not null
 #  title              :text             not null
+#  winner             :integer
 #  winning_bid        :integer
 #  created_at         :datetime         not null
 #  user_id            :bigint(8)
@@ -43,8 +44,8 @@ RSpec.describe Lot, type: :model do
 
   describe "validation  created_status" do
     it "must be pending after create" do
-      in_process_lot =  FactoryBot.build(:lot, status: :in_process)
-      closed_lot = FactoryBot.build(:lot, status: :closed)
+      in_process_lot =  build(:lot, status: :in_process)
+      closed_lot = build(:lot, status: :closed)
       in_process_lot.valid?
       closed_lot.valid?
       expect(in_process_lot.errors[:status]).to include ("must be pending")
@@ -63,8 +64,8 @@ RSpec.describe Lot, type: :model do
 
   describe "check_start_and_end_time callback" do
     before do
-      user = FactoryBot.create(:user)
-      @lot = FactoryBot.create(:lot, user: user)
+      user = create(:user)
+      @lot = create(:lot, user: user)
     end
 
     it "should create update job for closes status" do

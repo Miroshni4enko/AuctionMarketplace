@@ -15,7 +15,7 @@ RSpec.describe LotsController, type: :controller do
         include_examples "success response"
 
         before do
-          new_lot_params = FactoryBot.attributes_for(:lot, user: @user)
+          new_lot_params = attributes_for(:lot, user: @user)
           post :create, params: new_lot_params
         end
 
@@ -32,7 +32,7 @@ RSpec.describe LotsController, type: :controller do
         include_examples "unprocessable entity"
 
         before do
-          new_lot_params = FactoryBot.attributes_for(:lot, estimated_price: -21.00, user: @user)
+          new_lot_params = attributes_for(:lot, estimated_price: -21.00, user: @user)
           post :create, params: new_lot_params
         end
 

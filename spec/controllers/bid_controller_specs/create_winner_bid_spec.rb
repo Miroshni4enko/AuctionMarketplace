@@ -6,14 +6,13 @@ RSpec.describe BidsController, type: :controller do
   include ActiveJob::TestHelper
   describe "creating of winning bid" do
     before { ActionMailer::Base.deliveries = [] }
-    let (:default_from_email) {["from@example.com"]}
 
     before :all do
-      @user = FactoryBot.create(:user)
-      @lot = FactoryBot.create(:lot, :with_in_process_status, user: @user)
-      @another_user = FactoryBot.create(:user)
+      @user = create(:user)
+      @lot = create(:lot, :with_in_process_status, user: @user)
+      @another_user = create(:user)
       proposed_price = @lot.estimated_price + 1.00
-      @bid_params = FactoryBot.attributes_for(:bid, proposed_price: proposed_price, lot: @lot, user: @another_user)
+      @bid_params = attributes_for(:bid, proposed_price: proposed_price, lot: @lot, user: @another_user)
     end
 
     before :each do
@@ -43,7 +42,7 @@ RSpec.describe BidsController, type: :controller do
     it "should send email about closing lot" do
       emails = ActionMailer::Base.deliveries
       lot_closed_subject = "Lot '#{@lot.title}' was sold"
-      lot_closed_email = emails.find {|email| email.subject == lot_closed_subject}
+      lot_closed_email = emails.find { |email| email.subject == lot_closed_subject }
 
       expect(default_from_email).to eq(lot_closed_email.from)
       expect([@user.email]).to eq(lot_closed_email.to)
@@ -53,7 +52,7 @@ RSpec.describe BidsController, type: :controller do
     it "should send email about winning bid" do
       emails = ActionMailer::Base.deliveries
       winner_subject = "You are winner"
-      winner_email = emails.find {|email| email.subject == winner_subject}
+      winner_email = emails.find { |email| email.subject == winner_subject }
 
       expect(default_from_email).to eq(winner_email.from)
       expect([@another_user.email]).to eq(winner_email.to)

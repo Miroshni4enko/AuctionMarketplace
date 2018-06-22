@@ -22,7 +22,7 @@ RSpec.describe LotsController, type: :controller do
           Sidekiq::Testing.inline! do
             ss = Sidekiq::ScheduledSet.new
             ss.clear
-            @new_lot = FactoryBot.create(:lot, user: @user)
+            @new_lot = create(:lot, user: @user)
             delete :destroy, params: { id: @new_lot.id }
             expect(ss.size).to eq(0)
             expect(@user.lots.count).to eq(0)

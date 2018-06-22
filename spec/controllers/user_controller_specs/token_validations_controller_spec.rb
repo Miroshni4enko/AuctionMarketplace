@@ -5,7 +5,7 @@ require "rails_helper"
 describe "Token validations", type: :request do
   describe "GET #validate_token" do
     before do
-      @user = FactoryBot.build(:user, :unconfirmed)
+      @user = build(:user, :unconfirmed)
       @user.skip_confirmation!
       @user.save!
       @auth_headers = @user.create_new_auth_token

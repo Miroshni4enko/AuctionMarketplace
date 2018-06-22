@@ -4,7 +4,7 @@ require "rails_helper"
 
 describe "Session user flow", type: :request do
   before (:each) do
-     @user = FactoryBot.create(:user)
+     @user = create(:user)
    end
 
   it "should sign in and get access-token" do

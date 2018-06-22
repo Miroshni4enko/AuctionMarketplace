@@ -11,7 +11,7 @@ RSpec.describe LotsController, type: :controller do
 
     before do
       login
-      @new_lot = FactoryBot.create(:lot, user: @logged_user)
+      @new_lot = create(:lot, user: @logged_user)
       # alternative way ti upload file from fixture fixture_file_upload( "./spec/fixtures/files/lot_ex.jpg", "image/jpeg") }
       put :update,
           params: { id: @new_lot.id,

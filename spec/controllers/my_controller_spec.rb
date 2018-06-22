@@ -9,11 +9,11 @@ RSpec.describe MyController, type: :controller do
 
     describe "result with sign in" do
       before :all do
-        @user = FactoryBot.create(:user)
-        another_user = FactoryBot.create(:user)
-        FactoryBot.create_list(:lot, 10, :with_in_process_status, user: @user)
-        @another_user_lot = FactoryBot.create(:lot, :with_in_process_status, user: another_user)
-        FactoryBot.create_list(:bid, 10, lot: @another_user_lot, user: @user)
+        @user = create(:user)
+        another_user = create(:user)
+        create_list(:lot, 10, :with_in_process_status, user: @user)
+        @another_user_lot = create(:lot, :with_in_process_status, user: another_user)
+        create_list(:bid, 10, lot: @another_user_lot, user: @user)
       end
 
       describe " by created criteria" do
@@ -59,9 +59,9 @@ RSpec.describe MyController, type: :controller do
 
         before do
           login
-          another_user = FactoryBot.create(:user)
-          FactoryBot.create_list(:lot, 10, :with_in_process_status, user: @logged_user)
-          FactoryBot.create_list(:lot, 10, :with_in_process_status, user: another_user)
+          another_user = create(:user)
+          create_list(:lot, 10, :with_in_process_status, user: @logged_user)
+          create_list(:lot, 10, :with_in_process_status, user: another_user)
 
           get :index, params: { filter: :all }
 

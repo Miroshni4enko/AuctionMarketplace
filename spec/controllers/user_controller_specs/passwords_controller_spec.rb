@@ -6,7 +6,7 @@ describe "Password reset", type: :request do
   describe "POST #create" do
     describe "successfully requested password reset" do
       before do
-        @user = FactoryBot.create(:user, :unconfirmed)
+        @user = create(:user, :unconfirmed)
 
         post "/api/auth/password", params: { email: @user.email }
 
@@ -43,7 +43,7 @@ describe "Password reset", type: :request do
 
   describe "PUT #edit" do
     before do
-      @user = FactoryBot.create(:user, :unconfirmed)
+      @user = create(:user, :unconfirmed)
       @new_password = Faker::Internet.password
       put "/api/auth/password", params: { password: @new_password,
                                      password_confirmation: @new_password,

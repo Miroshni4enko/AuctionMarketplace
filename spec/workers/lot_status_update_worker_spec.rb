@@ -4,8 +4,8 @@ require "rails_helper"
 
 RSpec.describe LotStatusUpdateWorker, type: :worker do
   before do
-    current_user = FactoryBot.create(:user)
-    @new_lot = FactoryBot.create(:lot, user: current_user)
+    current_user = create(:user)
+    @new_lot = create(:lot, user: current_user)
   end
 
   it { is_expected.to be_processed_in :high }

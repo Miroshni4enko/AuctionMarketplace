@@ -5,9 +5,9 @@ require "rails_helper"
 RSpec.describe BidsController, type: :controller do
 
   before do
-    @user = FactoryBot.create(:user)
-    @lot = FactoryBot.create(:lot, :with_in_process_status, user: @user)
-    @another_user = FactoryBot.create(:user)
+    @user = create(:user)
+    @lot = create(:lot, :with_in_process_status, user: @user)
+    @another_user = create(:user)
   end
 
   describe "GET #index" do
@@ -17,7 +17,7 @@ RSpec.describe BidsController, type: :controller do
       include_examples "success response"
 
       before do
-        @bid = FactoryBot.create(:bid, lot: @lot, user: @another_user)
+        @bid = create(:bid, lot: @lot, user: @another_user)
         login @another_user
         get :index, params: { lot_id: @lot.id }
       end

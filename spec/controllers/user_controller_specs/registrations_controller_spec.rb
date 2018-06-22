@@ -4,7 +4,7 @@ require "rails_helper"
 
 describe "Sign up user flow  ", type: :request do
   let!(:user_params) {
-    user_params = FactoryBot.attributes_for(:user, :unconfirmed)
+    user_params = attributes_for(:user, :unconfirmed)
   }
 
 
@@ -21,7 +21,7 @@ describe "Sign up user flow  ", type: :request do
 
   describe "Delete #destroy" do
     it "should destroy user" do
-      current_user = FactoryBot.create(:user)
+      current_user = create(:user)
       delete "/api/auth", params: { email: current_user.email, password: current_user.password }, headers: current_user.create_new_auth_token
       # Rails.logger.debug JSON.parse(response.body).to_hash["errors"]
       expect(response).to be_successful

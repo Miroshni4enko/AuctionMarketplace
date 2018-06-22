@@ -5,7 +5,7 @@ require "rails_helper"
 RSpec.describe ApplicationCable::Connection, type: :channel do
 
   it "successfully connects" do
-    @user = FactoryBot.create(:user)
+    @user = create(:user)
     connect "/cable", headers: @user.create_new_auth_token
     expect(connection.current_user).to eq(@user)
   end
