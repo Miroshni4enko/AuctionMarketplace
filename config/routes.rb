@@ -17,6 +17,10 @@ Rails.application.routes.draw do
 
     resources :lots do
       resources :bids, except: [:show, :update, :destroy]
+      resource :orders, only: [:create, :update] do
+        post "send", to: "orders#_send_"
+        post "deliver", to: "orders#deliver"
+      end
     end
 
     mount Sidekiq::Web, at: "/sidekiq"

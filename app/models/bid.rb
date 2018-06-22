@@ -19,12 +19,11 @@
 class Bid < ApplicationRecord
   belongs_to :user
   belongs_to :lot
-  has_one :order, dependent: :destroy
   validates :proposed_price, presence: true
   validates :proposed_price, numericality: { greater_than_or_equal_to: 0 }
   validate :proposed_price_validation
   validate :lot_status_validation, on: :create
-  after_create :update_current_price_of_lot
+  after_create :update_lot_by_created_bid
   after_create :check_bid_is_winner
   after_create :perform_broadcast
 
@@ -34,9 +33,10 @@ class Bid < ApplicationRecord
     end
   end
 
-  def update_current_price_of_lot
+  def update_lot_by_created_bid
     lot.current_price = proposed_price
     lot.winning_bid = id
+    lot.winner = user_id
     lot.save!
   end
 
@@ -57,7 +57,7 @@ class Bid < ApplicationRecord
 
   def lot_status_validation
     unless lot.in_process?
-      errors.add("lot.status", "lot status must be in process")
+      errors.add("lot.status", "must be in process")
     end
   end
 end

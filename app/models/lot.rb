@@ -15,6 +15,7 @@
 #  lot_start_time     :datetime         not null
 #  status             :integer          default("pending"), not null
 #  title              :text             not null
+#  winner             :integer
 #  winning_bid        :integer
 #  created_at         :datetime         not null
 #  user_id            :bigint(8)
@@ -29,7 +30,7 @@ class Lot < ApplicationRecord
 
   mount_uploader :image, LotImageUploader
   belongs_to :user
-  has_one :order, through: :bid
+  has_one :order, dependent: :destroy
   has_many :bids, dependent: :destroy, inverse_of: :lot
 
   enum status: { pending: 0, in_process: 1, closed: 2 }
@@ -57,19 +58,13 @@ class Lot < ApplicationRecord
   end
 
   def send_emails
-    WinnerMailer.winning_email(Bid.find(winning_bid).user, self).deliver_later
+    NotifyCustomerMailer.winning_email(User.find(winner), self).deliver_later
     NotifySellerMailer.lot_closed_email(user, self).deliver_later
   end
 
   def lot_end_time_cannot_be_less_than_lot_start_time
     if lot_end_time.present? && lot_start_time.present? && lot_end_time <= lot_start_time
       errors.add(:lot_end_time, "can't be less lot start time")
-    end
-  end
-
-  def created_status_validation
-    if status != "pending"
-      errors.add(:status, "must be pending")
     end
   end
 
