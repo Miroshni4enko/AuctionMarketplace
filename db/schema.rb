@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_06_104928) do
+ActiveRecord::Schema.define(version: 2018_06_21_130215) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,15 +38,16 @@ ActiveRecord::Schema.define(version: 2018_06_06_104928) do
     t.string "lot_jid_in_process"
     t.string "lot_jid_closed"
     t.integer "winning_bid"
+    t.integer "winner"
     t.index ["user_id"], name: "index_lots_on_user_id"
   end
 
   create_table "orders", force: :cascade do |t|
-    t.bigint "bid_id"
     t.text "arrival_location", null: false
     t.integer "arrival_type", default: 0, null: false
     t.integer "status", default: 0, null: false
-    t.index ["bid_id"], name: "index_orders_on_bid_id"
+    t.bigint "lot_id"
+    t.index ["lot_id"], name: "index_orders_on_lot_id"
   end
 
   create_table "users", force: :cascade do |t|
