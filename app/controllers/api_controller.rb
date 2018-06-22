@@ -11,7 +11,7 @@ class ApiController < ApplicationController
   end
 
   def missing_param_error(exception)
-    render status: :unprocessable_entity, json: {error: exception.message}
+    render status: :unprocessable_entity, json: { error: exception.message }
   end
 
 
@@ -40,30 +40,29 @@ class ApiController < ApplicationController
 
   private
 
-  def set_pending_lot
-    @lot = current_user.lots.find(lot_params[:id])
-    if @lot.status != "pending"
-      render json: {error: "Status must be pending"}, status: :unprocessable_entity
+    def set_pending_lot
+      @lot = current_user.lots.find(lot_params[:id])
+      if @lot.status != "pending"
+        render json: { error: "Status must be pending" }, status: :unprocessable_entity
+      end
     end
-  end
 
 
-  def pagination(paginated_array, per_page = Kaminari.config.default_per_page)
-    {pagination: {per_page: per_page.to_i,
-                  total_pages: paginated_array.total_pages,
-                  total_lots: paginated_array.total_count}}
-  end
-
-  def render_collection(collection, options = {})
-    render ({json: collection, meta: pagination(collection)}).merge! options
-  end
-
-  def render_record_or_errors(item, options = {})
-    if item.errors.present?
-      render json: {errors: item.errors}, status: :unprocessable_entity
-    else
-      render ({json: item, status: 200}).merge! options
+    def pagination(paginated_array, per_page = Kaminari.config.default_per_page)
+      { pagination: { per_page: per_page.to_i,
+                    total_pages: paginated_array.total_pages,
+                    total_lots: paginated_array.total_count } }
     end
-  end
 
+    def render_collection(collection, options = {})
+      render ({ json: collection, meta: pagination(collection) }).merge! options
+    end
+
+    def render_record_or_errors(item, options = {})
+      if item.errors.present?
+        render json: { errors: item.errors }, status: :unprocessable_entity
+      else
+        render ({ json: item, status: 200 }).merge! options
+      end
+    end
 end

@@ -2,12 +2,11 @@
 
 class BidsController < ApiController
   include Docs::BidsController
-  before_action :authenticate_user!
+  before_action :find_lot
   before_action :check_lot_not_pending, only: :index
 
   def create
-    lot = Lot.find(bid_params[:lot_id])
-    if current_user.id != lot.user_id
+    if current_user.id != @lot.user_id
       bid = current_user.bids.build(bid_params)
       bid.save
       render_record_or_errors bid, serializer: BidSerializer
@@ -15,7 +14,6 @@ class BidsController < ApiController
       render json: { error: "Current user can't create bid" }, status: :forbidden
     end
   end
-
 
   def index
     bids = @lot.bids.page(bid_params[:page])
@@ -25,7 +23,6 @@ class BidsController < ApiController
   private
 
     def check_lot_not_pending
-      @lot = Lot.find(bid_params[:lot_id])
       if @lot.pending?
         render json: { error: "Lot should be not pending" }, status: :forbidden
       end
@@ -33,5 +30,9 @@ class BidsController < ApiController
 
     def bid_params
       params.permit(:lot_id, :proposed_price, :page)
+    end
+
+    def find_lot
+      @lot = Lot.find(bid_params[:lot_id])
     end
 end

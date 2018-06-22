@@ -14,7 +14,7 @@ class LotsController < ApiController
     lot = Lot.find(lot_params[:id])
     users_id = lot.bids.map(&:id)
     if lot.user_id == current_user.id || users_id.include?(current_user.id)
-      render_record_or_errors lot , serializer: LotWithAssociationSerializer
+      render_record_or_errors lot, serializer: LotWithAssociationSerializer
     else
       render status: :forbidden
     end
