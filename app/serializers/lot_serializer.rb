@@ -15,6 +15,7 @@
 #  lot_start_time     :datetime         not null
 #  status             :integer          default("pending"), not null
 #  title              :text             not null
+#  winner             :integer
 #  winning_bid        :integer
 #  created_at         :datetime         not null
 #  user_id            :bigint(8)
