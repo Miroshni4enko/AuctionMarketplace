@@ -1,24 +1,30 @@
-# README
+# Auction Marketplace
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+REST server for auction marketplace where people (as a sellers) can 
+present their products for sale at auctions' lots from one side,
+and from the other side - take part in the lots of other people (as a customers)to buy their products.
 
-Things you may want to cover:
+Rest Api documentation can find on /api route 
 
 * Ruby version
+  2.4.3, gemset AuctionMarketplace (see rvm configuration) 
 
 * System dependencies
+  - install postgreSql 
+  - install Reddis(Sidekiq is used for pprocessing jobs)
 
 * Configuration
+  - add config for env, see example config/properties.env.example  
 
 * Database creation
+  use approprite env(ex. test )
+  - rake db:create
+  - rake db:migration
 
 * Database initialization
+  - rake db:seed
 
 * How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+  - rspec 
+* How to regenerate docs
+  - rake swagger:docs
