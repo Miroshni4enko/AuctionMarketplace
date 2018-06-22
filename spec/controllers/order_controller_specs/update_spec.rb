@@ -17,7 +17,7 @@ RSpec.describe OrdersController, type: :controller do
       lot.update_columns attrs
       lot
     end
-    let(:new_order) { create(:order, lot: purchased_lot) }
+    let!(:new_order) { create(:order, lot: purchased_lot) }
     let(:new_params) { { arrival_type: "pickup", arrival_location: "some new location" } }
 
 
@@ -26,7 +26,7 @@ RSpec.describe OrdersController, type: :controller do
       describe "update pending order" do
         before do
           login bid_user
-          put :update, params: new_params.merge(id: new_order.id, lot_id: purchased_lot.id)
+          put :update, params: new_params.merge(lot_id: purchased_lot.id)
           new_order.reload
         end
 
@@ -43,7 +43,7 @@ RSpec.describe OrdersController, type: :controller do
     describe " update another user order" do
       before do
         login user
-        put :update, params: new_params.merge!(id: new_order.id, lot_id: purchased_lot.id)
+        put :update, params: new_params.merge!(lot_id: purchased_lot.id)
       end
 
       include_examples "forbidden response"

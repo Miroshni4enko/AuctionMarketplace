@@ -16,12 +16,16 @@
       "description": "User form registration"
     },
     {
-      "path": "/apidocs/lots.{format}",
-      "description": "Lots Management"
-    },
-    {
       "path": "/apidocs/bids.{format}",
       "description": "Bids Management"
+    },
+    {
+      "path": "/apidocs/orders.{format}",
+      "description": "Orders Management"
+    },
+    {
+      "path": "/apidocs/lots.{format}",
+      "description": "Lots Management"
     }
   ],
   "authorizations": null

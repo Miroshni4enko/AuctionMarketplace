@@ -5,7 +5,7 @@ module Docs
     extend ActiveSupport::Concern
     included do
       swagger_model :Bid do
-        property :id, :integer, :required, "ID of Lot"
+        property :id, :integer, :required, "ID of Bid"
         property :customer_name, :string, :required, "Customer name"
         property :proposed_price, :float, :required, "Proposed price"
         property :created_at, :date, :required, "Created at"
@@ -16,7 +16,7 @@ module Docs
       end
 
       swagger_model :Bids do
-        description "Lot objects."
+        description "Bid objects."
         property :bids, :array, :required, "Bids", items: { "$ref" => :ShowBid }
       end
     end

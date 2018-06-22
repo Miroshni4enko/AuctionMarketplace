@@ -83,6 +83,13 @@
               "required": true
             },
             {
+              "paramType": "path",
+              "name": "lot_id",
+              "type": "integer",
+              "description": "ID of Lot",
+              "required": true
+            },
+            {
               "paramType": "form",
               "name": "proposed_price",
               "type": "float",
@@ -132,7 +139,7 @@
       "properties": {
         "id": {
           "type": "integer",
-          "description": "ID of Lot"
+          "description": "ID of Bid"
         },
         "customerName": {
           "type": "string",
@@ -175,7 +182,7 @@
           }
         }
       },
-      "description": "Lot objects."
+      "description": "Bid objects."
     }
   }
 }

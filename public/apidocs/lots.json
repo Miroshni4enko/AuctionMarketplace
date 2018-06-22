@@ -5,86 +5,6 @@
   "resourcePath": "lots",
   "apis": [
     {
-      "path": "/api/lots/my/{filter}.json",
-      "operations": [
-        {
-          "parameters": [
-            {
-              "paramType": "header",
-              "name": "uid",
-              "type": "string",
-              "description": "uid",
-              "required": true
-            },
-            {
-              "paramType": "header",
-              "name": "access-token",
-              "type": "string",
-              "description": "access-token",
-              "required": true
-            },
-            {
-              "paramType": "header",
-              "name": "client",
-              "type": "string",
-              "description": "client",
-              "required": true
-            },
-            {
-              "paramType": "path",
-              "name": "filter",
-              "type": "string",
-              "description": "filter",
-              "required": true,
-              "allowableValues": {
-                "valueType": "LIST",
-                "values": [
-                  "created",
-                  "participation",
-                  "all"
-                ]
-              }
-            },
-            {
-              "paramType": "query",
-              "name": "page",
-              "type": "integer",
-              "description": "Pagination page number",
-              "required": false
-            },
-            {
-              "paramType": "query",
-              "name": "per_page",
-              "type": "integer",
-              "description": "Number of items per page",
-              "required": false
-            }
-          ],
-          "summary": "Fetches current user lots filter by criteria",
-          "responseMessages": [
-            {
-              "code": 200,
-              "responseModel": "Lots",
-              "message": "success"
-            },
-            {
-              "code": 401,
-              "responseModel": null,
-              "message": "Unauthorized"
-            },
-            {
-              "code": 404,
-              "responseModel": null,
-              "message": "Not Found"
-            }
-          ],
-          "notes": "make sure you pass filter parameter",
-          "nickname": "Lots#my",
-          "method": "get"
-        }
-      ]
-    },
-    {
       "path": "/api/lots.json",
       "operations": [
         {
@@ -208,21 +128,6 @@
               "type": "string",
               "description": "Image",
               "required": false
-            },
-            {
-              "paramType": "form",
-              "name": "status",
-              "type": "string",
-              "description": "Status",
-              "required": true,
-              "allowableValues": {
-                "valueType": "LIST",
-                "values": [
-                  "pending",
-                  "in_process",
-                  "closed"
-                ]
-              }
             }
           ],
           "summary": "Creates a new Lot",
@@ -373,21 +278,6 @@
               "type": "string",
               "description": "Image",
               "required": false
-            },
-            {
-              "paramType": "form",
-              "name": "status",
-              "type": "string",
-              "description": "Status",
-              "required": true,
-              "allowableValues": {
-                "valueType": "LIST",
-                "values": [
-                  "pending",
-                  "in_process",
-                  "closed"
-                ]
-              }
             }
           ],
           "summary": "Update Lot",
@@ -455,7 +345,7 @@
       "properties": {
         "id": {
           "type": "integer",
-          "description": "ID of Lot"
+          "description": "ID of Bid"
         },
         "customerName": {
           "type": "string",
@@ -498,7 +388,7 @@
           }
         }
       },
-      "description": "Lot objects."
+      "description": "Bid objects."
     },
     "LotWithBids": {
       "id": "LotWithBids",

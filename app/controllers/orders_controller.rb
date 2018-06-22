@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class OrdersController < ApiController
+  include Docs::OrdersController
   before_action :find_lot
   before_action :require_customer, only: [:create, :update, :deliver]
   before_action :require_seller, only: [:_send_]
@@ -12,7 +13,7 @@ class OrdersController < ApiController
   end
 
   def update
-    order = Order.find(order_params[:id])
+    order = @lot.order
     order.update(order_params)
     render_record_or_errors order, serializer: OrderSerializer
   end
@@ -48,7 +49,7 @@ class OrdersController < ApiController
     end
 
     def order_params
-      params.permit(:id, :lot_id, :arrival_type, :arrival_location)
+      params.permit(:lot_id, :arrival_type, :arrival_location)
     end
 
     def find_lot
