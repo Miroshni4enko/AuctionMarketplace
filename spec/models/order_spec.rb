@@ -65,7 +65,7 @@ RSpec.describe Order, type: :model do
       it "restrict update status to sent" do
         order = create(:order, :with_delivered_status, lot: lot)
         order.update(status: :sent)
-        expect(order.errors[:status]).to include("status should be update only from pending to sent or from sent to delivered")
+        expect(order.errors[:status]).to include(error_status_changes)
       end
     end
 
@@ -76,5 +76,13 @@ RSpec.describe Order, type: :model do
         expect(order.errors[:status]).to be_empty
       end
     end
+  end
+
+  def error_status_changes
+    "status should be update only from pending to sent or from sent to delivered"
+  end
+
+  def error_order_validation
+    "can't update order if status is not pending"
   end
 end
