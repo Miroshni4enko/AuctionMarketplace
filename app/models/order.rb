@@ -25,11 +25,6 @@ class Order < ApplicationRecord
   validate :created_status_validation, on: :create
   validate :status_pending_and_not_changed, on: :update
   validate :status_changes, on: :update
-  after_create :send_order_created_email
-  after_save :send_order_executed_email
-  after_save :send_order_delivered_emails
-
-  private
 
     def status_pending_and_not_changed
       if changed != ["status"] && status != "pending"
@@ -43,24 +38,4 @@ class Order < ApplicationRecord
       end
     end
 
-    def status_changed_to? (changed_status)
-      saved_change_to_status? && status == changed_status
-    end
-
-    def send_order_delivered_emails
-      if status_changed_to? "delivered"
-        NotifyCustomerMailer.order_delivered_email(User.find(lot.winner), lot).deliver_later
-        NotifySellerMailer.order_delivered_email(lot.user, lot).deliver_later
-      end
-    end
-
-    def send_order_executed_email
-      if status_changed_to? "sent"
-        NotifyCustomerMailer.order_sent_email(User.find(lot.winner), lot, self).deliver_later
-      end
-    end
-
-    def send_order_created_email
-      NotifySellerMailer.order_created_email(lot.user, lot, self).deliver_later
-    end
 end

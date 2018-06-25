@@ -80,3 +80,5 @@ gem "active_model_serializers", "~> 0.10.0"
 gem "sidekiq"
 
 gem "swagger-docs"
+
+gem 'rails-observers'

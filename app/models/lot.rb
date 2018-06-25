@@ -34,30 +34,24 @@ class Lot < ApplicationRecord
   has_one :order, dependent: :destroy
   has_many :bids, dependent: :destroy, inverse_of: :lot
 
-  enum status: { pending: 0, in_process: 1, closed: 2 }
+  enum status: {pending: 0, in_process: 1, closed: 2}
 
-  scope :created_criteria, -> { where user_id: User.current.id }
+  scope :created_criteria, -> {where user_id: User.current.id}
 
-  scope :participation_criteria, -> { joins(:bids).where(bids: { user_id: User.current.id }).distinct }
+  scope :participation_criteria, -> {joins(:bids).where(bids: {user_id: User.current.id}).distinct}
 
-  scope :all_criteria, ->  { where(lots: { user_id: User.current.id })
-                                            .or(where(bids: { user_id: User.current.id }))
-                                            .left_joins(:bids)}
-
-  scope :pending_lot_by_user, -> (lot_id, user) {
-    where(id: lot_id)
-        .where(user_id: user.id)
-        .where(status: :pending)
-  }
+  scope :all_criteria, -> {where(lots: {user_id: User.current.id})
+                               .or(where(bids: {user_id: User.current.id}))
+                               .left_joins(:bids)}
 
   validates :title, :status, :current_price, :estimated_price,
             :lot_start_time, :lot_end_time, presence: true
   validates :current_price, :estimated_price,
-            numericality: { greater_than_or_equal_to: 0 }
+            numericality: {greater_than_or_equal_to: 0}
   validates :lot_start_time, times_in_the_future: true
 
   # configure image uploader
-  validates :image, file_size: { less_than: 1.megabytes }
+  validates :image, file_size: {less_than: 1.megabytes}
   validates_integrity_of :image
   validates_processing_of :image
 
@@ -66,7 +60,6 @@ class Lot < ApplicationRecord
 
   after_commit :create_jobs!, on: :create
   before_update :update_jobs_by_start_and_end_time
-  after_save :send_emails, if: :status_changed_to_close?
 
   def close_lot
     self.lot_jid_closed = nil
@@ -76,43 +69,34 @@ class Lot < ApplicationRecord
 
   private
 
-    def status_changed_to_close?
-      saved_change_to_status? && status == "closed"
+  def update_jobs_by_start_and_end_time
+    if lot_start_time_changed?
+      create_updated_status_job! :in_process, lot_start_time
     end
 
-    def send_emails
-      NotifyCustomerMailer.winning_email(User.find(winner), self).deliver_later
-      NotifySellerMailer.lot_closed_email(user, self).deliver_later
+    if lot_end_time_changed?
+      create_updated_status_job! :closed, lot_end_time
     end
+  end
 
-    def update_jobs_by_start_and_end_time
-      if lot_start_time_changed?
-        create_updated_status_job! :in_process, lot_start_time
-      end
-
-      if lot_end_time_changed?
-        create_updated_status_job! :closed, lot_end_time
-      end
+  def end_time_cannot_be_less_than_start_time
+    if lot_end_time.present? && lot_start_time.present? && lot_end_time <= lot_start_time
+      errors.add(:lot_end_time, "can't be less lot start time")
     end
+  end
 
-    def end_time_cannot_be_less_than_start_time
-      if lot_end_time.present? && lot_start_time.present? && lot_end_time <= lot_start_time
-        errors.add(:lot_end_time, "can't be less lot start time")
-      end
-    end
+  def create_updated_status_job! (status, time)
+    job = create_updated_status_job status, time
+    update_column("lot_jid_#{status}", job)
+  end
 
-    def create_updated_status_job! (status, time)
-      job = create_updated_status_job status, time
-      update_column("lot_jid_#{status}", job)
-    end
+  def create_updated_status_job (status, time)
+    LotStatusUpdateWorker.perform_at(time, id, status)
+  end
 
-    def create_updated_status_job (status, time)
-      LotStatusUpdateWorker.perform_at(time, id, status)
-    end
-
-    def create_jobs!
-      to_in_process_job = create_updated_status_job :in_process, lot_start_time
-      to_close_job = create_updated_status_job :closed, lot_end_time
-      update_columns(lot_jid_in_process: to_in_process_job, lot_jid_closed: to_close_job)
-    end
+  def create_jobs!
+    to_in_process_job = create_updated_status_job :in_process, lot_start_time
+    to_close_job = create_updated_status_job :closed, lot_end_time
+    update_columns(lot_jid_in_process: to_in_process_job, lot_jid_closed: to_close_job)
+  end
 end

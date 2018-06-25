@@ -18,10 +18,6 @@
 require "rails_helper"
 RSpec.describe Order, type: :model do
 
-  it { is_expected.to callback(:send_order_created_email).after(:create) }
-  it { is_expected.to callback(:send_order_executed_email).after(:save) }
-  it { is_expected.to callback(:send_order_delivered_emails).after(:save) }
-
   describe "validation created  status" do
     it "must be pending after create" do
       pending_order = build(:order)
@@ -40,14 +36,14 @@ RSpec.describe Order, type: :model do
 
   describe "validation before updated " do
 
-    let!(:user) { create(:user) }
-    let!(:another_user)  { create(:user) }
-    let!(:lot) { create(:lot, :with_in_process_status, user: user) }
-    let!(:bid) { create(:bid, lot: lot, user: another_user) }
+    let!(:user) {create(:user)}
+    let!(:another_user) {create(:user)}
+    let!(:lot) {create(:lot, :with_in_process_status, user: user)}
+    let!(:bid) {create(:bid, lot: lot, user: another_user)}
 
     context "with sent status" do
       it_should_behave_like "sent order before update validation" do
-        let(:order) { create(:order, :with_sent_status, lot: lot) }
+        let(:order) {create(:order, :with_sent_status, lot: lot)}
       end
 
       it "should accept update status to delivered " do
@@ -58,8 +54,8 @@ RSpec.describe Order, type: :model do
     end
 
     context "with delivered status" do
-      include_examples "sent order before update validation"  do
-        let(:order) { create(:order, :with_delivered_status, lot: lot) }
+      include_examples "sent order before update validation" do
+        let(:order) {create(:order, :with_delivered_status, lot: lot)}
       end
 
       it "restrict update status to sent" do
@@ -71,7 +67,7 @@ RSpec.describe Order, type: :model do
 
     context "with pending status" do
       it "should accept any update" do
-        order =  create(:order, lot: lot)
+        order = create(:order, lot: lot)
         order.update(arrival_location: "some address", arrival_type: "pickup")
         expect(order.errors[:status]).to be_empty
       end

@@ -26,8 +26,6 @@ class OrdersController < ApiController
     change_status_to :delivered
   end
 
-  private
-
     def change_status_to(status)
       order = @lot.order
       order.update(status: status)

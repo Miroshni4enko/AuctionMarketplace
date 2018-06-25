@@ -8,4 +8,8 @@ class ApplicationRecord < ActiveRecord::Base
       errors.add(:status, "must be pending")
     end
   end
+
+  def status_changed_to? (changed_status)
+    saved_change_to_status? && status == changed_status
+  end
 end
