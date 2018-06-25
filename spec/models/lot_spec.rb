@@ -28,7 +28,7 @@
 require "rails_helper"
 RSpec.describe Lot, type: :model do
 
-  it { is_expected.to callback(:create_jobs!).after(:create) }
+  it { is_expected.to callback(:create_jobs!).after(:commit) }
 
   it { is_expected.to callback(:send_emails).after(:save) }
 

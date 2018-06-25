@@ -19,23 +19,23 @@ class BidsController < ApiController
 
   private
 
-  def require_not_seller
-    if current_user.id == @lot.user_id
-      render json: {error: "Seller can't create bid"}, status: :forbidden
+    def require_not_seller
+      if current_user.id == @lot.user_id
+        render json: { error: "Seller can't create bid" }, status: :forbidden
+      end
     end
-  end
 
-  def check_lot_not_pending
-    if @lot.pending?
-      render json: {error: "Lot should be not pending"}, status: :forbidden
+    def check_lot_not_pending
+      if @lot.pending?
+        render json: { error: "Lot should be not pending" }, status: :forbidden
+      end
     end
-  end
 
-  def bid_params
-    params.permit(:lot_id, :proposed_price, :page)
-  end
+    def bid_params
+      params.permit(:lot_id, :proposed_price, :page)
+    end
 
-  def find_lot
-    @lot = Lot.find(bid_params[:lot_id])
-  end
+    def find_lot
+      @lot = Lot.find(bid_params[:lot_id])
+    end
 end

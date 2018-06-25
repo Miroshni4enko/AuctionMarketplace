@@ -46,8 +46,7 @@ RSpec.describe Bid, type: :model do
     end
 
     it "should update current price of lot" do
-      bid = build(:bid, lot: @lot, user: @user)
-      bid.update_lot_by_created_bid
+      bid = create(:bid, lot: @lot, user: @user)
       expect(@lot.current_price).to eq(bid.proposed_price)
       expect(@lot.winning_bid).to eq(bid.id)
     end
@@ -55,8 +54,7 @@ RSpec.describe Bid, type: :model do
     it "check_bid_is_winner" do
       another_user = create(:user)
       proposed_price = @lot.estimated_price + 2.00
-      bid = create(:bid, proposed_price: proposed_price, lot: @lot, user: another_user)
-      bid.check_bid_is_winner
+      create(:bid, proposed_price: proposed_price, lot: @lot, user: another_user)
       expect(@lot.status).to eq("closed")
       expect(@lot.lot_jid_closed).to eq(nil)
     end

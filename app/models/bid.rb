@@ -27,37 +27,39 @@ class Bid < ApplicationRecord
   after_create :check_bid_is_winner
   after_create :perform_broadcast
 
-  def check_bid_is_winner
-    if proposed_price >= lot.estimated_price
-      lot.close_lot
+  private
+
+    def check_bid_is_winner
+      if proposed_price >= lot.estimated_price
+        lot.close_lot
+      end
     end
-  end
 
-  def update_lot_by_created_bid
-    lot.current_price = proposed_price
-    lot.winning_bid = id
-    lot.winner = user_id
-    lot.save!
-  end
-
-  def proposed_price_validation
-    if proposed_price <= lot.current_price
-      errors.add(:proposed_price, "can't be less than current lot price")
+    def update_lot_by_created_bid
+      lot.current_price = proposed_price
+      lot.winning_bid = id
+      lot.winner = user_id
+      lot.save!
     end
-  end
 
-  def serialize_bid
-    serializer = BidSerializer.new(self)
-    ActiveModelSerializers::Adapter.create(serializer).as_json
-  end
-
-  def perform_broadcast
-    BidBroadcastWorker.perform_async(serialize_bid)
-  end
-
-  def lot_status_validation
-    unless lot.in_process?
-      errors.add("lot.status", "must be in process")
+    def proposed_price_validation
+      if proposed_price <= lot.current_price
+        errors.add(:proposed_price, "can't be less than current lot price")
+      end
     end
-  end
+
+    def serialize_bid
+      serializer = BidSerializer.new(self)
+      ActiveModelSerializers::Adapter.create(serializer).as_json
+    end
+
+    def perform_broadcast
+      BidBroadcastWorker.perform_async(serialize_bid)
+    end
+
+    def lot_status_validation
+      unless lot.in_process?
+        errors.add("lot.status", "must be in process")
+      end
+    end
 end
