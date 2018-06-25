@@ -38,6 +38,10 @@ class ApiController < ApplicationController
     end
   end
 
+  def set_current_model_user
+    User.current = current_user
+  end
+
   private
 
     def set_pending_lot

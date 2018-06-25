@@ -4,9 +4,9 @@ module Filterable
   extend ActiveSupport::Concern
 
   module ClassMethods
-    def filter_by_criteria_and_user_id(criteria, user_id)
+    def filter_by_criteria(criteria)
       results = self.where(nil)
-      results.public_send(criteria + "_by_user_id", user_id)
+      results.public_send(criteria + "_criteria")
     end
   end
 end

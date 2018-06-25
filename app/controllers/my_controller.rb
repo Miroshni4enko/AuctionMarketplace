@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 class MyController < ApiController
+  before_action :set_current_model_user
   before_action :check_criteria
 
   def index
-    my_lots = Lot.filter_by_criteria_and_user_id(@criteria, current_user.id).page(my_params[:page])
+    my_lots = Lot.filter_by_criteria(@criteria).page(my_params[:page])
     render_collection my_lots, each_serializer: LotSerializer
   end
 

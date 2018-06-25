@@ -39,6 +39,14 @@ class User < ApplicationRecord
   has_many :lots, dependent: :destroy, inverse_of: :user
   has_many :bids, dependent: :destroy
 
+  def self.current
+    Thread.current[:user]
+  end
+
+  def self.current=(user)
+    Thread.current[:user] = user
+  end
+
   validates :email, :phone, :first_name, :last_name, :birthday, presence: true
   validates :email, :phone, uniqueness: true
   validates :email, email_format: { message: "doesn't look like an email address" }

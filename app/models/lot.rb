@@ -36,12 +36,12 @@ class Lot < ApplicationRecord
 
   enum status: { pending: 0, in_process: 1, closed: 2 }
 
-  scope :created_by_user_id, -> (user_id) { where user_id: user_id }
+  scope :created_criteria, -> { where user_id: User.current.id }
 
-  scope :participation_by_user_id, -> (user_id) { joins(:bids).where(bids: { user_id: user_id }).distinct }
+  scope :participation_criteria, -> { joins(:bids).where(bids: { user_id: User.current.id }).distinct }
 
-  scope :all_by_user_id, -> (user_id) { where(lots: { user_id: user_id })
-                                            .or(where(bids: { user_id: user_id }))
+  scope :all_criteria, ->  { where(lots: { user_id: User.current.id })
+                                            .or(where(bids: { user_id: User.current.id }))
                                             .left_joins(:bids)}
 
   scope :pending_lot_by_user, -> (lot_id, user) {
