@@ -82,9 +82,9 @@ GEM
       rails (< 6)
     diff-lcs (1.3)
     docile (1.3.1)
-    dotenv (2.4.0)
-    dotenv-rails (2.4.0)
-      dotenv (= 2.4.0)
+    dotenv (2.5.0)
+    dotenv-rails (2.5.0)
+      dotenv (= 2.5.0)
       railties (>= 3.2, < 6.0)
     erubi (1.7.1)
     factory_bot (4.10.0)
@@ -134,9 +134,9 @@ GEM
     msgpack (1.2.4)
     msgpack (1.2.4-x64-mingw32)
     nio4r (2.3.1)
-    nokogiri (1.8.2)
+    nokogiri (1.8.3)
       mini_portile2 (~> 2.3.0)
-    nokogiri (1.8.2-x64-mingw32)
+    nokogiri (1.8.3-x64-mingw32)
       mini_portile2 (~> 2.3.0)
     orm_adapter (0.5.0)
     parallel (1.12.1)
@@ -144,10 +144,10 @@ GEM
       ast (~> 2.4.0)
     pg (1.0.0)
     pg (1.0.0-x64-mingw32)
-    powerpack (0.1.1)
+    powerpack (0.1.2)
     puma (3.11.4)
     rack (2.0.5)
-    rack-protection (2.0.2)
+    rack-protection (2.0.3)
       rack
     rack-test (1.0.0)
       rack (>= 1.0, < 3)
@@ -227,7 +227,7 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
-    sprockets (3.7.1)
+    sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-rails (3.2.1)
@@ -284,6 +284,7 @@ DEPENDENCIES
   shoulda-callback-matchers (~> 1.1.1)
   sidekiq
   simplecov
+  sprockets (~> 3.7.2)
   swagger-docs
   tzinfo-data
   validates_email_format_of
