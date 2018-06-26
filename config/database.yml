@@ -83,5 +83,5 @@ test:
 production:
   <<: *default
   database: AuctionMarketplace_production
-  username: AuctionMarketplace
-  password: <%= ENV['AUCTIONMARKETPLACE_DATABASE_PASSWORD'] %>
+  username: auctionmarketplacevm
+  password:

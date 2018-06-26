@@ -26,7 +26,7 @@ gem "sprockets" , "~> 3.7.2"
 # gem 'capistrano-rails', group: :development
 
 # Reduces boot times through caching; required in config/boot.rb
-gem "bootsnap", ">= 1.1.0", require: false
+gem "bootsnap", require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
@@ -36,7 +36,18 @@ group :development, :test do
   gem "byebug", platforms: %i[mri mingw x64_mingw]
 end
 
+group :production do
+  gem 'unicorn'
+end
+
 group :development do
+  gem "capistrano"
+  gem "capistrano-rails"
+  gem 'capistrano-sidekiq'
+  gem 'capistrano-rvm'
+  gem 'capistrano3-puma'
+  gem 'capistrano-unicorn-nginx'
+  gem 'capistrano-postgresql'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
