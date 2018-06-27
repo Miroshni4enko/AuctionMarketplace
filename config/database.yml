@@ -17,14 +17,15 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  username: <%=ENV['db_username']%>
-  password: <%=ENV['db_password']%>
   # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
-  pool: <%=ENV['pool_connections']%>
+
 
 development:
   <<: *default
+  #username: <%=ENV['db_username']%>
+  #password: <%=ENV['db_password']%>
+  #pool: <%=ENV['pool_connections']%>
   database: AuctionMarketplace_development
 
   # The specified database role being used to connect to postgres.
@@ -82,6 +83,7 @@ test:
 #
 production:
   <<: *default
-  database: AuctionMarketplace_production
   username: auctionmarketplacevm
-  password:
+  password: auctionmarketplace
+  database: AuctionMarketplace_production
+

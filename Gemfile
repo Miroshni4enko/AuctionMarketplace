@@ -45,9 +45,9 @@ group :development do
   gem "capistrano-rails"
   gem 'capistrano-sidekiq'
   gem 'capistrano-rvm'
-  gem 'capistrano3-puma'
-  gem 'capistrano-unicorn-nginx'
+  gem 'capistrano3-unicorn'
   gem 'capistrano-postgresql'
+  gem 'capistrano3-nginx'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

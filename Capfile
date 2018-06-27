@@ -6,7 +6,9 @@ install_plugin Capistrano::SCM::Git
 
 require 'capistrano/rails'
 require 'capistrano/rvm'
-require 'capistrano/puma'
-require 'capistrano/unicorn_nginx'
+require 'capistrano3/unicorn'
 require 'capistrano/postgresql'
+require 'capistrano/sidekiq'
+require 'capistrano/nginx'
 
+Dir.glob('lib/capistrano/**/*.rb').each { |r| import r }
