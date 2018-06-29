@@ -17,6 +17,8 @@
 default: &default
   adapter: postgresql
   encoding: unicode
+  username: pguser
+  password: pguser
   # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
 
@@ -83,6 +85,7 @@ test:
 #
 production:
   <<: *default
+  pool: 5
   username: auctionmarketplacevm
   password: auctionmarketplace
   database: AuctionMarketplace_production

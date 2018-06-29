@@ -3,7 +3,7 @@
 require "sidekiq/web"
 
 Rails.application.routes.draw do
-  get "/api" => redirect("/swagger-ui/dist/index.html?url=/apidocs/api-docs.json")
+  get "/api_docs" => redirect("swagger-ui/dist/index.html?url=/apidocs/api-docs.json")
   scope :api do
     mount_devise_token_auth_for "User", at: "auth", defaults: { format: :json }, controllers: {
         sessions: "users/sessions",

@@ -6,12 +6,12 @@ lock '3.11.0'
 
 # Default value for :format is :pretty
 set :format, :pretty
-
-
+set :application, 'AuctionMarketplace'
+set :full_app_name, "#{fetch(:application)}_#{fetch(:stage)}"
+set :stage, :production
 # Change the YOUR_GITHUB_NAME to your github user name
 set :scm, :git
 set :repo_url, 'git@github.com:Miroshni4enko/AuctionMarketplace.git'
-set :application, 'AuctionMarketplace'
 set :deploy_user, 'auctionmarketplacevm'
 
 # files we want symlinking to specific entries in shared.
@@ -26,11 +26,10 @@ set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public
 # can add monit
 set(:config_files, %w(
   nginx.conf
-  database.example.yml
   log_rotation
-
   unicorn.rb
   unicorn_init.sh
+  database.example.yml
 ))
 
 # which config files should be made executable after copying
@@ -65,6 +64,7 @@ set(:symlinks, [
 
 
 namespace :deploy do
+=begin
   task :copy_config do
     on release_roles :app do |role|
       fetch(:linked_files).each do |linked_file|
@@ -78,6 +78,7 @@ namespace :deploy do
       end
     end
   end
+=end
 
   task :symlink_secrets do
     on roles(:app) do
@@ -111,6 +112,6 @@ namespace :deploy do
   after 'deploy:publishing', 'deploy:restart'
 
 
-  before "deploy:check:linked_files", "deploy:copy_config"
+  #before "deploy:check:linked_files", "deploy:copy_config"
   after :finishing, :symlink_secrets
 end
