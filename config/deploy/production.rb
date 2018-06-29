@@ -6,12 +6,18 @@ set :user, 'auctionmarketplacevm'
 # the 'full name' of the application
 # the server(s) to deploy to
 set :rails_env, :production
+set :stage, :production
 set :unicorn_rack_env, 'production'
-set :deploy_to, "/home/#{fetch(:user)}/apps/#{fetch(:application)}"
-set :unicorn_config_path, -> { File.join(current_path, 'config', 'unicorn', 'production.rb') }
-set :sidekiq_config, -> { File.join(current_path, 'config', 'sidekiq.yml') }
-
+set :server_name, "40.76.218.100"
 server '40.76.218.100', user: 'auctionmarketplacevm', roles: %w{web app db}, primary: true
+set :full_app_name, "#{fetch(:application)}_#{fetch(:stage)}"
+set :deploy_to, "/home/#{fetch(:deploy_user)}/apps/#{fetch(:full_app_name)}"
+#set :unicorn_config_path, -> { File.join(current_path, 'config', 'unicorn', 'production.rb') }
+set :sidekiq_config, -> { File.join(current_path, 'config', 'sidekiq.yml') }
+set :unicorn_worker_count, 5
+# whether we're using ssl or not, used for building nginx
+# config file
+set :enable_ssl, false
 
 # the path to deploy to
 # set to production for Rails

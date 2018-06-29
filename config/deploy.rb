@@ -23,11 +23,12 @@ set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public
 # which config files should be copied by deploy:setup_config
 # see documentation in lib/capistrano/tasks/setup_config.cap
 # for details of operations
+# can add monit
 set(:config_files, %w(
   nginx.conf
   database.example.yml
   log_rotation
-  monit
+
   unicorn.rb
   unicorn_init.sh
 ))
@@ -53,11 +54,13 @@ set(:symlinks, [
     {
         source: "log_rotation",
         link: "/etc/logrotate.d/#{fetch(:full_app_name)}"
-    },
-    {
+    }
+=begin
+    ,{
         source: "monit",
         link: "/etc/monit/conf.d/#{fetch(:full_app_name)}.conf"
     }
+=end
 ])
 
 
@@ -86,7 +89,7 @@ namespace :deploy do
   # make sure we're deploying what we think we're deploying
   before :deploy, "deploy:check_revision"
   # only allow a deploy with passing tests to deployed
-  before :deploy, "deploy:run_tests"
+ # before :deploy, "deploy:run_tests"
   # compile assets locally then rsync
   after 'deploy:symlink:shared', 'deploy:compile_assets_locally'
   after :finishing, 'deploy:cleanup'
