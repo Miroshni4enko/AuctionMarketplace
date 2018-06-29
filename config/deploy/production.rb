@@ -12,5 +12,6 @@ set :unicorn_config_path, -> { File.join(current_path, 'config', 'unicorn', 'pro
 set :sidekiq_config, -> { File.join(current_path, 'config', 'sidekiq.yml') }
 
 server '40.76.218.100', user: 'auctionmarketplacevm', roles: %w{web app db}, primary: true
+
 # the path to deploy to
 # set to production for Rails
