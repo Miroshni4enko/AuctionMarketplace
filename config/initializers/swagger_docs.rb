@@ -19,7 +19,7 @@ Swagger::Docs::Config.register_apis(
       api_file_path: "public/apidocs",
       # base path url of our application
       # while using production mode, point it to production url
-      base_path: "http://localhost:3000",
+      base_path: "http://auctionmarketplace.eastus.cloudapp.azure.com",
       # setting this option true tells swagger to clean all files generated in api_file_path directory before any files are generated
       clean_directory: true,
       controller_base_path: "",
