@@ -4,7 +4,9 @@ REST server for auction marketplace where people (as a sellers) can
 present their products for sale at auctions' lots from one side,
 and from the other side - take part in the lots of other people (as a customers)to buy their products.
 
-Rest Api documentation can find on /api route 
+Server url - http://auctionmarketplace.eastus.cloudapp.azure.com
+
+Rest Api documentation can find on /api_docs route 
 
 * Ruby version
   2.4.3, gemset AuctionMarketplace (see rvm configuration) 
@@ -25,6 +27,10 @@ Rest Api documentation can find on /api route
   - rake db:seed
 
 * How to run the test suite
-  - rspec 
+  - rspec
+   
 * How to regenerate docs
   - rake swagger:docs
+  
+* How to deploy
+  see DEPLOY.md
