@@ -4,16 +4,26 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
   # Code is not reloaded between requests.
-  config.cache_classes = false
+  config.cache_classes = true
 
   # Eager load code on boot. This eager loads most of Rails and
   # your application in memory, allowing both threaded web servers
   # and those relying on copy on write to perform better.
   # Rake tasks automatically ignore this option for performance.
-  config.eager_load = false
+  config.eager_load = true
+
+  #congig below need to ignore models when eager load because of superclass mismatch for class Lot
+  #https://stackoverflow.com/questions/13756986/how-to-blacklist-directory-loading-in-rails
+  path_rejector = lambda { |s| s.include?("app/models") }
+
+  # Remove the path from being loaded when Rails starts:
+  config.eager_load_paths = config.eager_load_paths.reject(&path_rejector)
+
 
   # Full error reports are disabled and caching is turned on.
-  config.consider_all_requests_local       = true
+  # used for development
+  # https://stackoverflow.com/questions/373089/purpose-of-consider-all-requests-local-in-config-environments-development-rb
+  config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
 
   # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
