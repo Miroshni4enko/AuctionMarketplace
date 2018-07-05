@@ -48,6 +48,9 @@ group :development do
   gem 'capistrano-postgresql'
   gem 'capistrano3-nginx'
   gem 'capistrano-bundler'
+#cool gem to investigate errors
+  gem "better_errors"
+  gem "binding_of_caller"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
